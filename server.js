@@ -135,6 +135,157 @@ app.get("/api/token", passport.authenticate(WebAppStrategy.STRATEGY_NAME),(req, 
 
 });
 
+// Middleware: usuario autenticado (responde 401 en lugar de redirigir, para llamadas XHR)
+function requireAuth(req, res, next) {
+	const authContext = req.session && req.session[WebAppStrategy.AUTH_CONTEXT];
+	if (authContext && authContext.accessToken) {
+		return next();
+	}
+	res.status(401).json({ error: 'Unauthorized' });
+}
+
+// Proxy: Coope Data API (URL interna de Code Engine, solo visible para el servidor).
+// Solo la coleccion coopesocios admite escritura; el resto son vistas/tablas de solo lectura.
+const COOPE_DATAAPI_READ_ONLY = new Set([
+	'vwsociosinactivos', 'vwsociosdetalles', 'vwmasterlookups', 'vwmasterplanpagos',
+	'movahorros', 'movbloqueos', 'movaportaciones', 'movmiscelaneos',
+	'pracademico', 'prautomovil', 'prconsumo', 'prcortoplazo', 'presp1', 'presp2',
+	'prhipotecario', 'prlargoplazo', 'prps', 'prsolafirma',
+	'planpagoscancelados', 'planpagospendientes', 'planpagostotales',
+	'planpagostotalpendientes', 'planpagostotalcancelados',
+	'garantesdetalle', 'certificadosmontos', 'garantizados', 'fra', 'siniestros',
+	'vwsociosibm', 'vwsocioskyndryl', 'vwsociosexempleados'
+]);
+const COOPE_DATAAPI_WRITABLE = new Set(['coopesocios']);
+const COOPE_DATAAPI_TIMEOUT_MS = 15000;
+
+function isSafeSegment(seg) {
+	return typeof seg === 'string' && seg.length > 0 && seg !== '.' && seg !== '..' && !seg.includes('/') && !seg.includes('\\');
+}
+
+// Middleware: Auth user
+app.all("/api/coope/{*splat}", requireAuth, async (req, res) => {
+	const baseUrl = process.env.COOPE_DATAAPI_URL;
+	if (!baseUrl || !/^https?:\/\//.test(baseUrl)) {
+		console.error('Coope Data API proxy is not configured correctly');
+		return res.status(503).json({ error: 'Service unavailable' });
+	}
+
+	const segments = [].concat(req.params.splat || []);
+	if (segments.length < 1 || segments.length > 2 || !segments.every(isSafeSegment)) {
+		return res.status(404).json({ error: 'Not found' });
+	}
+
+	const collection = segments[0];
+	const isWritable = COOPE_DATAAPI_WRITABLE.has(collection);
+	if (!isWritable && !COOPE_DATAAPI_READ_ONLY.has(collection)) {
+		return res.status(404).json({ error: 'Not found' });
+	}
+
+	const allowedMethods = isWritable ? ['GET', 'POST', 'PUT', 'DELETE'] : ['GET'];
+	if (!allowedMethods.includes(req.method)) {
+		return res.status(405).json({ error: 'Method not allowed' });
+	}
+	// POST se hace sobre la coleccion; PUT/DELETE requieren id
+	if ((req.method === 'POST' && segments.length !== 1) ||
+		((req.method === 'PUT' || req.method === 'DELETE') && segments.length !== 2)) {
+		return res.status(404).json({ error: 'Not found' });
+	}
+
+	const search = new URL(req.originalUrl, 'http://localhost').search;
+	const url = baseUrl.replace(/\/+$/, '') + '/' + segments.map(encodeURIComponent).join('/') + search;
+
+	const headers = { 'Accept': 'application/json' };
+	if (req.headers.authorization) {
+		headers['Authorization'] = req.headers.authorization;
+	}
+	const hasBody = req.method === 'POST' || req.method === 'PUT';
+	if (hasBody) {
+		headers['Content-Type'] = 'application/json';
+	}
+
+	try {
+		const upstream = await fetch(url, {
+			method: req.method,
+			headers,
+			body: hasBody ? JSON.stringify(req.body ?? {}) : undefined,
+			signal: AbortSignal.timeout(COOPE_DATAAPI_TIMEOUT_MS)
+		});
+		const text = await upstream.text();
+		res.status(upstream.status)
+			.type(upstream.headers.get('content-type') || 'application/json')
+			.send(text);
+	} catch (err) {
+		console.error('Coope Data API proxy error:', err.message);
+		res.status(502).json({ error: 'Bad gateway' });
+	}
+});
+
+// Proxy: Cloudant. Las credenciales viven solo en el servidor (variables de entorno).
+const CLOUDANT_DATABASES = new Set([
+	'servicios', 'imagenes', 'prestamos', 'certificados',
+	'proveedores', 'categorias', 'coopeproveedor'
+]);
+const CLOUDANT_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE']);
+const CLOUDANT_TIMEOUT_MS = 15000;
+
+function isAllowedCloudantPath(segments) {
+	if (segments.length < 1 || segments.length > 2) return false;
+	if (!CLOUDANT_DATABASES.has(segments[0])) return false;
+	if (segments.length === 2) {
+		const seg = segments[1];
+		const isSpecial = seg === '_all_docs' || seg === '_find';
+		const isDocId = seg.length > 0 && !seg.startsWith('_') && !seg.includes('/') && seg !== '.' && seg !== '..';
+		if (!isSpecial && !isDocId) return false;
+	}
+	return true;
+}
+
+// Middleware: Auth user
+app.all("/api/cloudant/{*splat}", requireAuth, async (req, res) => {
+	const baseUrl = process.env.CLOUDANT_URL;
+	const username = process.env.CLOUDANT_USERNAME;
+	const password = process.env.CLOUDANT_PASSWORD;
+
+	if (!baseUrl || !username || !password || !baseUrl.startsWith('https://')) {
+		console.error('Cloudant proxy is not configured correctly');
+		return res.status(503).json({ error: 'Service unavailable' });
+	}
+
+	if (!CLOUDANT_METHODS.has(req.method)) {
+		return res.status(405).json({ error: 'Method not allowed' });
+	}
+
+	const segments = [].concat(req.params.splat || []);
+	if (!isAllowedCloudantPath(segments)) {
+		return res.status(404).json({ error: 'Not found' });
+	}
+
+	const search = new URL(req.originalUrl, 'http://localhost').search;
+	const url = baseUrl.replace(/\/+$/, '') + '/' + segments.map(encodeURIComponent).join('/') + search;
+
+	const hasBody = req.method === 'POST' || req.method === 'PUT';
+	try {
+		const upstream = await fetch(url, {
+			method: req.method,
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Authorization': 'Basic ' + Buffer.from(`${username}:${password}`).toString('base64')
+			},
+			body: hasBody ? JSON.stringify(req.body ?? {}) : undefined,
+			signal: AbortSignal.timeout(CLOUDANT_TIMEOUT_MS)
+		});
+		const text = await upstream.text();
+		res.status(upstream.status)
+			.type(upstream.headers.get('content-type') || 'application/json')
+			.send(text);
+	} catch (err) {
+		console.error('Cloudant proxy error:', err.message);
+		res.status(502).json({ error: 'Bad gateway' });
+	}
+});
+
 // Ruta: Aplicacion Angular (archivos estaticos JS, CSS, assets sin trigger de login)
 const angularDist = env === 'production' ? "/dist" : "/client/dist";
 app.use(express.static(__dirname + angularDist, { index: false }));

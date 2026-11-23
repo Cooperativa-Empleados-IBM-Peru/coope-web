@@ -8,9 +8,9 @@ import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IbmidService } from './ibmid.service';
 import { UUID } from 'angular2-uuid';
-import { environment } from '../../environments/environment';
 
-const endpoint = environment.coopeapiUrl;
+// Same-origin proxy exposed by the Express server; the data API is only reachable internally.
+const endpoint = '/api/coope/';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ const endpoint = environment.coopeapiUrl;
 
 export class Db2Service {
 	uuidValue: string;
-  constructor(private http: HttpClient, private secureService: IbmidService	) {
+  constructor(private http: HttpClient, private secureService: IbmidService) {
 
   }
 
