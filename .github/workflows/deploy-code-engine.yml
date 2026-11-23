@@ -114,6 +114,7 @@ jobs:
             --env-from-secret CLOUDANT_=cloudant-secret \
             --env-from-configmap APPID_=appid-configmap \
             --env-from-secret APPID_=appid-secret \
+            --env-from-configmap hosts \
             --env NODE_ENV=production \
             --env FORCE_HTTPS=true
 

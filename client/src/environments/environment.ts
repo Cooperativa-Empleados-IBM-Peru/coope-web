@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 //
 // Service URLs and credentials are NOT configured here. They are provided at runtime by the
-// Express server (see `/api/config` and `/api/cloudant` in `server.js`) from environment variables.
+// Express server (see `/api/coope` and `/api/cloudant` in `server.js`) from environment variables.
 
 export const environment = {
 	production: false
