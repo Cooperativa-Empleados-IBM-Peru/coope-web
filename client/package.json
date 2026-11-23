@@ -39,7 +39,7 @@
     "carbon-components": "10.58.15",
     "carbon-components-angular": "4.59.19",
     "carbon-components-svelte": "0.114.5",
-    "ibmcloud-appid-js": "1.0.1",
+    "ibmcloud-appid-js": "2.0.0",
     "ngx-owl-carousel": "2.0.7",
     "ngx-owl-carousel-o": "6.0.2",
     "ngx-quill": "15.0.0",
