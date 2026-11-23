@@ -4,7 +4,6 @@ const session = require("express-session");
 const passport = require("passport");
 const appID = require("ibmcloud-appid");
 const dotenv = require('dotenv');
-const bodyParser = require("body-parser");
 const ibmdb = require('ibm_db');
 const cors = require('cors');
 
@@ -44,10 +43,10 @@ app.use(cors({
 }));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Configurar la sesion de la aplicacion
 const isProduction = env === "production";
@@ -141,7 +140,7 @@ const angularDist = env === 'production' ? "/dist" : "/client/dist";
 app.use(express.static(__dirname + angularDist, { index: false }));
 
 // Ruta raiz y Fallback para Angular SPA (protegida con App ID)
-app.get("*",
+app.get("/{*splat}",
 	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
 	(req, res) => {
 		res.sendFile(path.join(__dirname, angularDist, "index.html"));
