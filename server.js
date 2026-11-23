@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
@@ -6,7 +7,6 @@ const dotenv = require('dotenv');
 const bodyParser = require("body-parser");
 const ibmdb = require('ibm_db');
 const cors = require('cors');
-const { v4: uuidv4 } = require('uuid');
 
 const WebAppStrategy = appID.WebAppStrategy;
 
@@ -18,6 +18,9 @@ const connStr = `DATABASE=${process.env.DB2_DATABASE};HOSTNAME=${process.env.DB2
 
 // crear instancia Express
 const app = express();
+
+// Confiar en el proxy inverso (IBM Cloud Code Engine / Ingress)
+app.enable('trust proxy');
 
 // Constants
 const PORT = process.env.PORT || 6001;
@@ -47,13 +50,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Configurar la sesion de la aplicacion
+const isProduction = env === "production";
+const forceHttps = process.env.FORCE_HTTPS === "true" || isProduction;
+
 app.use(
   session({
-	secret: uuidv4(),
-    resave: true,
-    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET || "coope-session-secret-key",
+    resave: false,
+    saveUninitialized: false,
     proxy: true,
-	cookie: { secure: process.env.FORCE_HTTPS }
+    cookie: {
+      secure: forceHttps,
+      httpOnly: true,
+      sameSite: "lax"
+    }
   })
 );
 // Configurar Passport
@@ -74,6 +84,16 @@ passport.use(webAppStrategy);
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((obj, cb) => cb(null, obj));
 
+// Ruta: Revisar el estado de la aplicacion (sin autenticacion para health checks de Code Engine)
+app.get('/health', (req, res, next) => {
+  res.json({status: 'UP'})
+});
+
+// Ruta: Error de autenticacion
+app.get("/error", (req, res) => {
+  res.send("Authentication Error");
+});
+
 // Handle Login
 app.get('/login', passport.authenticate(WebAppStrategy.STRATEGY_NAME, {
 	successRedirect: '/',
@@ -82,21 +102,16 @@ app.get('/login', passport.authenticate(WebAppStrategy.STRATEGY_NAME, {
 
 // Handle callback
 app.get(CALLBACK_URL, passport.authenticate(
-	WebAppStrategy.STRATEGY_NAME, 
-	{failureRedirect: '/error'}
-	));
-
-// Ruta: Aplicacion Angular
-// Middleware: Auth user
-const angularDist = env === 'production' ? "/dist" : "/client/dist";
-app.use("/", 
-	passport.authenticate(WebAppStrategy.STRATEGY_NAME), 
-	express.static(__dirname + angularDist)
-	);
+	WebAppStrategy.STRATEGY_NAME,
+	{
+		successRedirect: '/',
+		failureRedirect: '/error'
+	}
+));
 
 // Ruta: Cerrar sesion
 // Middleware: Auth user
-app.get("/logout", 
+app.get("/logout",
 	passport.authenticate(WebAppStrategy.STRATEGY_NAME), (req, res) => {
   		WebAppStrategy.logout(req);
   		res.redirect("/");
@@ -120,17 +135,21 @@ app.get("/api/token", passport.authenticate(WebAppStrategy.STRATEGY_NAME),(req, 
 
 });
 
-// Ruta: Revisar el estado de la aplicacion
-// Middleware: -
-app.get('/health', (req, res, next) => {
-  res.json({status: 'UP'})
-});
+// Ruta: Aplicacion Angular
+// Middleware: Auth user
+const angularDist = env === 'production' ? "/dist" : "/client/dist";
+app.use(
+	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
+	express.static(__dirname + angularDist)
+);
 
-// Ruta: Error
-// Middleware: -
-app.get("/error", (req, res) => {
-  res.send("Authentication Error");
-});
+// Fallback para Angular SPA (deep linking / refresco de pagina)
+app.get("*",
+	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
+	(req, res) => {
+		res.sendFile(path.join(__dirname, angularDist, "index.html"));
+	}
+);
 
 app.listen(PORT, HOST, () => {
 	console.log(`Running on http://${HOST}:${PORT}`);
