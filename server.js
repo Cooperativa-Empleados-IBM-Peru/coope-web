@@ -1,4 +1,5 @@
 const path = require("path");
+const crypto = require("crypto");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
@@ -70,6 +71,66 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Logging estructurado de diagnostico de autenticacion (nunca registra tokens, codigos ni secretos)
+function authLog(level, message, extra) {
+	const line = JSON.stringify(Object.assign({ ts: new Date().toISOString(), level, message }, extra));
+	if (level === 'error') {
+		console.error(line);
+	} else {
+		console.log(line);
+	}
+}
+
+function sessionSummary(req) {
+	const sess = req.session;
+	const authCtx = sess && sess[WebAppStrategy.AUTH_CONTEXT];
+	const state = sess && sess[WebAppStrategy.STATE_PARAMETER];
+	return {
+		method: req.method,
+		path: req.path,
+		queryKeys: Object.keys(req.query || {}),
+		secure: req.secure,
+		protocol: req.protocol,
+		xForwardedProto: req.get('x-forwarded-proto'),
+		host: req.get('host'),
+		xForwardedHost: req.get('x-forwarded-host'),
+		hasSessionCookie: /(^|;\s*)connect\.sid=/.test(req.headers.cookie || ''),
+		sessionIdHash: req.sessionID ? crypto.createHash('sha256').update(req.sessionID).digest('hex').slice(0, 8) : null,
+		sessionIsNew: sess ? Object.keys(sess).filter(k => k !== 'cookie').length === 0 : null,
+		hasAuthContext: !!authCtx,
+		hasStateParam: !!state,
+		hasPassportUser: !!(sess && sess.passport && sess.passport.user),
+		returnTo: (sess && sess.returnTo) || null
+	};
+}
+
+// Registrar cada peticion de autenticacion (ignora archivos estaticos) junto con la redireccion resultante
+app.use((req, res, next) => {
+	if (path.extname(req.path)) {
+		return next();
+	}
+	const before = sessionSummary(req);
+	res.on('finish', () => {
+		let location = null;
+		const header = res.getHeader('location');
+		if (header) {
+			try {
+				const u = new URL(String(header), `${req.protocol}://${req.get('host')}`);
+				location = u.origin + u.pathname; // sin query: contiene state/code
+			} catch (e) {
+				location = String(header).split('?')[0];
+			}
+		}
+		authLog('info', 'request', Object.assign(before, {
+			status: res.statusCode,
+			location,
+			setCookie: !!res.getHeader('set-cookie'),
+			hasAuthContextAfter: !!(req.session && req.session[WebAppStrategy.AUTH_CONTEXT])
+		}));
+	});
+	next();
+});
+
 // Configurar Passport con APP ID
 const CALLBACK_URL = "/ibm/cloud/appid/callback";
 let webAppStrategy = new WebAppStrategy({
@@ -95,31 +156,68 @@ app.get("/error", (req, res) => {
 });
 
 // Handle Login
+// keepSessionInfo: passport >= 0.6 regenera la sesion en login y, sin esta opcion,
+// se pierde el contexto de App ID (AUTH_CONTEXT, state) guardado en req.session
 app.get('/login', passport.authenticate(WebAppStrategy.STRATEGY_NAME, {
 	successRedirect: '/',
-	forceLogin: true
+	forceLogin: true,
+	keepSessionInfo: true
 }));
 
-// Handle callback
-app.get(CALLBACK_URL, passport.authenticate(
-	WebAppStrategy.STRATEGY_NAME,
-	{
-		successRedirect: '/',
-		failureRedirect: '/error'
-	}
-));
+// Handle callback (con callback personalizado para registrar la causa real del fallo)
+app.get(CALLBACK_URL, (req, res, next) => {
+	authLog('info', 'appid callback received', Object.assign(sessionSummary(req), {
+		hasCode: !!req.query.code,
+		hasState: !!req.query.state,
+		stateMatchesSession: !!(req.session && req.session[WebAppStrategy.STATE_PARAMETER] &&
+			req.query.state && req.session[WebAppStrategy.STATE_PARAMETER].state === req.query.state),
+		providerError: req.query.error || null,
+		providerErrorDescription: req.query.error_description || null
+	}));
+
+	passport.authenticate(WebAppStrategy.STRATEGY_NAME, { keepSessionInfo: true },
+		(err, user, info) => {
+			if (err) {
+				authLog('error', 'appid callback strategy error', { error: err.message, stack: err.stack });
+				return res.redirect('/error');
+			}
+			if (!user) {
+				authLog('error', 'appid callback authentication failed', {
+					reason: info instanceof Error ? info.message : info,
+					code: info && info.code,
+					statusCode: info && info.statusCode
+				});
+				return res.redirect('/error');
+			}
+			req.logIn(user, { keepSessionInfo: true }, (loginErr) => {
+				if (loginErr) {
+					authLog('error', 'passport logIn failed', { error: loginErr.message, stack: loginErr.stack });
+					return res.redirect('/error');
+				}
+				authLog('info', 'appid login successful', Object.assign(sessionSummary(req), {
+					email: user.email ? String(user.email).replace(/^(.).*(@.*)$/, '$1***$2') : null
+				}));
+				res.redirect('/');
+			});
+		}
+	)(req, res, next);
+});
+
+// Middleware: Auth user. keepSessionInfo evita que passport regenere la sesion (y borre el
+// contexto de App ID) en cada peticion autenticada con exito
+const requireAppIdLogin = passport.authenticate(WebAppStrategy.STRATEGY_NAME, { keepSessionInfo: true });
 
 // Ruta: Cerrar sesion
 // Middleware: Auth user
 app.get("/logout",
-	passport.authenticate(WebAppStrategy.STRATEGY_NAME), (req, res) => {
+	requireAppIdLogin, (req, res) => {
   		WebAppStrategy.logout(req);
   		res.redirect("/");
 	});
 
 // Ruta: Obtener el email
 // Middleware: Auth user
-app.get("/api/token", passport.authenticate(WebAppStrategy.STRATEGY_NAME),(req, res) => {
+app.get("/api/token", requireAppIdLogin,(req, res) => {
 
   var accessToken = req.session[WebAppStrategy.AUTH_CONTEXT].accessToken;
   var email = req.session[WebAppStrategy.AUTH_CONTEXT].identityTokenPayload.email;
@@ -292,11 +390,20 @@ app.use(express.static(__dirname + angularDist, { index: false }));
 
 // Ruta raiz y Fallback para Angular SPA (protegida con App ID)
 app.get("/{*splat}",
-	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
+	requireAppIdLogin,
 	(req, res) => {
 		res.sendFile(path.join(__dirname, angularDist, "index.html"));
 	}
 );
+
+// Manejo de errores no controlados (se registra el detalle; el cliente solo recibe un mensaje generico)
+app.use((err, req, res, next) => {
+	authLog('error', 'unhandled error', { path: req.path, error: err && err.message, stack: err && err.stack });
+	if (res.headersSent) {
+		return next(err);
+	}
+	res.status(500).json({ error: 'Internal server error' });
+});
 
 app.listen(PORT, HOST, () => {
 	console.log(`Running on http://${HOST}:${PORT}`);
