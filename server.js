@@ -142,8 +142,8 @@ function getInfo ( email ){
 		ibmdb.open(connStr, function (err,conn) {
 			if (err) reject(err);
 			// Save last login info
-			let sqlins = `INSERT INTO ${process.env.DB2_USERNAME}.USERSLOGIN (EMAILEMPLEADO, FECLOGIN) VALUES ('${email}', CURRENT TIMESTAMP);`;
-			let sqlqry = `SELECT c.UUID FROM ${process.env.DB2_USERNAME}.VWSOCIOSACTIVOS c WHERE c.EMAILEMPLEADO = '${email}' OR c.EMAILEMPLEADO2 = '${email}';`;
+			let sqlins = `INSERT INTO ${process.env.DB2_SCHEMA}.USERSLOGIN (EMAILEMPLEADO, FECLOGIN) VALUES ('${email}', CURRENT TIMESTAMP);`;
+			let sqlqry = `SELECT c.UUID FROM ${process.env.DB2_SCHEMA}.VWSOCIOSACTIVOS c WHERE c.EMAILEMPLEADO = '${email}' OR c.EMAILEMPLEADO2 = '${email}';`;
 
 			conn.query(sqlins, function (err2, result) {
 				if (err2) throw err2;
