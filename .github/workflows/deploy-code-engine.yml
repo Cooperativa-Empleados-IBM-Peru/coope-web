@@ -108,10 +108,12 @@ jobs:
             --min-scale 1 \
             --cpu 0.125 \
             --memory 0.25G \
+            --env-from-secret session-secret \
             --env-from-configmap DB2_=db2-configmap \
             --env-from-secret DB2_=db2-secret \
             --env-from-configmap APPID_=appid-configmap \
             --env-from-secret APPID_=appid-secret \
-            --env NODE_ENV=production
+            --env NODE_ENV=production \
+            --env FORCE_HTTPS=true
 
           ibmcloud ce app get --name "${CE_APP_NAME}"
