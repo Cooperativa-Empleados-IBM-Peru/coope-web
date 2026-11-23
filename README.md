@@ -72,4 +72,5 @@ A los siguientes nombres de variables definidas en Travis, se les agrega al fina
 - DB2_HOSTNAME
 - DB2_PASSWORD
 - DB2_PORT
-- DB2_USER
+- DB2_USERNAME
+- DB2_SCHEMA
