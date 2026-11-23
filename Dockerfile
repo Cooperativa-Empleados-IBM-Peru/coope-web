@@ -41,8 +41,8 @@ RUN microdnf install -y --setopt=install_weak_deps=0 --nodocs libxcrypt-compat &
 # Establecer el directorio de trabajo
 WORKDIR /opt/app-root/src
 
-# Copiar los archivos de configuración del proyecto (angular.json, package.json, etc.)
-COPY --chown=1001:0 . .
+# Copiar solo lo necesario para ejecutar el servidor Express
+COPY --chown=1001:0 package.json server.js ./
 
 # Copiar los archivos generados en el stage anterior
 COPY --from=build --chown=1001:0 /opt/app-root/src/dist ./dist
