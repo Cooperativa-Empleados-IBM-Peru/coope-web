@@ -8,14 +8,14 @@ WORKDIR /opt/app-root/src
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
 # Copiar solo los manifiestos para cachear la capa de dependencias
-COPY --chown=1001:0 client/package.json client/package-lock.json ./
+COPY --chown=1001:0 package.json package-lock.json ./
 
 # Instalar las dependencias (la capa se reutiliza mientras no cambien los manifiestos)
 RUN --mount=type=cache,target=/opt/app-root/src/.npm,uid=1001 \
     npm ci --cache /opt/app-root/src/.npm
 
 # Copiar el resto del código y compilar la aplicación de Angular
-COPY --chown=1001:0 client .
+COPY --chown=1001:0 . .
 RUN npm run build:prod
 
 # Stage 2: Dependencias de producción del servidor (ibm_db necesita descargar el
@@ -43,6 +43,7 @@ WORKDIR /opt/app-root/src
 
 # Copiar solo lo necesario para ejecutar el servidor Express
 COPY --chown=1001:0 package.json server.js ./
+COPY --chown=1001:0 libs ./libs
 
 # Copiar los archivos generados en el stage anterior
 COPY --from=build --chown=1001:0 /opt/app-root/src/dist ./dist
