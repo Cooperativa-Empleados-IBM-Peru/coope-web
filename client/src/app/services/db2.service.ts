@@ -8,9 +8,7 @@ import { Observable, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IbmidService } from './ibmid.service';
 import { UUID } from 'angular2-uuid';
-import { environment } from '../../environments/environment';
-
-const endpoint = environment.coopeapiUrl;
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +16,12 @@ const endpoint = environment.coopeapiUrl;
 
 export class Db2Service {
 	uuidValue: string;
-  constructor(private http: HttpClient, private secureService: IbmidService	) {
+  constructor(private http: HttpClient, private secureService: IbmidService, private config: ConfigService) {
 
+  }
+
+  private get endpoint(): string {
+    return this.config.coopeapiUrl;
   }
 
   private extractData(res: Response): any {
@@ -36,7 +38,7 @@ export class Db2Service {
     //id : COOPESOCIOS uuid
     const params = new HttpParams();
 
-      return this.http.get(endpoint + `vwsociosinactivos/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+      return this.http.get(this.endpoint + `vwsociosinactivos/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
       .pipe(
        catchError(this.secureService.handleError)
       )
@@ -46,7 +48,7 @@ export class Db2Service {
     //id : COOPESOCIOS uuid
     const params = new HttpParams();
 
-      return this.http.get(endpoint + `vwsociosdetalles/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+      return this.http.get(this.endpoint + `vwsociosdetalles/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
       .pipe(
        catchError(this.secureService.handleError)
       )
@@ -56,7 +58,7 @@ export class Db2Service {
     //id : COOPESOCIOS uuid
     const params = new HttpParams();
 
-    return this.http.get(endpoint + `vwmasterlookups/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+    return this.http.get(this.endpoint + `vwmasterlookups/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
       .pipe(
        catchError(this.secureService.handleError)
       )
@@ -66,7 +68,7 @@ export class Db2Service {
     //id : NUMOPERACION
     const params = new HttpParams();
 
-    return this.http.get(endpoint + `vwmasterplanpagos/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+    return this.http.get(this.endpoint + `vwmasterplanpagos/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
       .pipe(
        catchError(this.secureService.handleError)
       )
@@ -97,7 +99,7 @@ export class Db2Service {
       const params = new HttpParams()
         .set('filter', '{"where":{"ctacliente":"' + cuenta + '"}, "order":["fecemision DESC"]}');
 
-        return this.http.get(endpoint + lbcont, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+        return this.http.get(this.endpoint + lbcont, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
         .pipe(
          catchError(this.secureService.handleError)
         )
@@ -153,7 +155,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"ctacliente":"' + cuenta + '"}, "order":["feccartera ASC"]}');
 
-          return this.http.get(endpoint + lbcont, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + lbcont, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -164,7 +166,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"numoperacion":"' + operacion + '"}, "order":["cuota ASC"]}');
 
-          return this.http.get(endpoint + 'planpagoscancelados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'planpagoscancelados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -175,7 +177,7 @@ export class Db2Service {
         const params = new HttpParams()
             .set('filter', '{"where":{"numoperacion":"' + operacion + '"}, "order":["cuota ASC"]}');
 
-            return this.http.get(endpoint + 'planpagospendientes', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+            return this.http.get(this.endpoint + 'planpagospendientes', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
             .pipe(
              catchError(this.secureService.handleError)
             )
@@ -186,7 +188,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"numoperacion":"' + operacion + '"}}');
 
-          return this.http.get(endpoint + 'planpagostotales', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'planpagostotales', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -196,7 +198,7 @@ export class Db2Service {
         //id : numoperacion
         const params = new HttpParams()
 
-          return this.http.get(endpoint + `planpagostotalpendientes/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + `planpagostotalpendientes/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -206,7 +208,7 @@ export class Db2Service {
         //id : numoperacion
         const params = new HttpParams()
 
-          return this.http.get(endpoint + `planpagostotalcancelados/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + `planpagostotalcancelados/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -217,7 +219,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"numoperacion":"' + operacion + '"}, "order":["docidgarante ASC"]}');
 
-          return this.http.get(endpoint + 'garantesdetalle', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'garantesdetalle', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -228,7 +230,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"ctacliente":"' + cuenta + '", "tipocert":"' + tipo + '"}, "order":["fecemision ASC", "numdoc ASC"] }');
 
-          return this.http.get(endpoint + 'certificadosmontos', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'certificadosmontos', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -239,7 +241,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"codempleado":"' + codemp + '"} }');
 
-          return this.http.get(endpoint + 'garantizados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'garantizados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -250,7 +252,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"codempleado":"' + codemp + '"} }');
 
-          return this.http.get(endpoint + 'fra', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'fra', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -261,7 +263,7 @@ export class Db2Service {
         const params = new HttpParams()
           .set('filter', '{"where":{"codempleado":"' + codemp + '"} }');
 
-          return this.http.get(endpoint + 'siniestros', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+          return this.http.get(this.endpoint + 'siniestros', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
            catchError(this.secureService.handleError)
           )
@@ -270,7 +272,7 @@ export class Db2Service {
   getSociosIbm() : Observable<any>{
       const params = new HttpParams()
 
-        return this.http.get(endpoint + 'vwsociosibm', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+        return this.http.get(this.endpoint + 'vwsociosibm', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
         .pipe(
          catchError(this.secureService.handleError)
         )
@@ -279,7 +281,7 @@ export class Db2Service {
   getSociosKyndryl() : Observable<any>{
       const params = new HttpParams()
 
-        return this.http.get(endpoint + 'vwsocioskyndryl', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+        return this.http.get(this.endpoint + 'vwsocioskyndryl', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
         .pipe(
          catchError(this.secureService.handleError)
         )
@@ -288,7 +290,7 @@ export class Db2Service {
   getSociosExEmpleados() : Observable<any>{
       const params = new HttpParams()
 
-        return this.http.get(endpoint + 'vwsociosexempleados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+        return this.http.get(this.endpoint + 'vwsociosexempleados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
         .pipe(
          catchError(this.secureService.handleError)
         )
@@ -297,7 +299,7 @@ export class Db2Service {
   getSocioById(id: string) : Observable<any>{
     const params = new HttpParams()
 
-      return this.http.get(endpoint + `coopesocios/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+      return this.http.get(this.endpoint + `coopesocios/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
       .pipe(
        catchError(this.secureService.handleError)
       )
@@ -306,7 +308,7 @@ export class Db2Service {
 	getExsocios() : Observable<any>{
 	  	const params = new HttpParams()
 
-		    return this.http.get(endpoint + 'vwsociosinactivos', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+		    return this.http.get(this.endpoint + 'vwsociosinactivos', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
 		    .pipe(
 		     catchError(this.secureService.handleError)
 		    )
@@ -319,7 +321,7 @@ export class Db2Service {
         updSocio.uuid = updSocio.uuid.trim();
         updSocio.nombreempleado = updSocio.nombreempleado.trim();
        
-        return this.http.put(endpoint + `coopesocios/${id}`, updSocio ,{ params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+        return this.http.put(this.endpoint + `coopesocios/${id}`, updSocio ,{ params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
           catchError(this.secureService.handleError)
         )
@@ -328,7 +330,7 @@ export class Db2Service {
 	deleteSocio(id: string) : Observable<any>{
 	  	const params = new HttpParams()
 
-		  return this.http.delete(endpoint + `coopesocios/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+		  return this.http.delete(this.endpoint + `coopesocios/${id}`, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
 		  .pipe(
 		    catchError(this.secureService.handleError)
 		  )
@@ -338,7 +340,7 @@ export class Db2Service {
 	addSocio(socio: Object) :Observable<any>{
 	  	const params = new HttpParams()
 console.log(socio);
-		  return this.http.post(endpoint + 'coopesocios', socio ,{ params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
+		  return this.http.post(this.endpoint + 'coopesocios', socio ,{ params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
 		  .pipe(
 		    catchError(this.secureService.handleError)
 		  )

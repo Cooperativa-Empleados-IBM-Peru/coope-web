@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders,  HttpParams } from '@angular/common/http';
 import { throwError, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-
-const endpoint = environment.cloudantUrl;
+// Same-origin proxy exposed by the Express server; Cloudant credentials never reach the browser.
+const endpoint = '/api/cloudant/';
 
 @Injectable({
   providedIn: 'root'
@@ -154,8 +153,7 @@ export class CloudantService {
 	private httpOptions(): any {
 		return {
 			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Authorization': 'Basic ' + btoa(`${environment.cloudantUsername}:${environment.cloudantPassword}`)
+				'Content-Type': 'application/json'
 			})
 		};
 	}
