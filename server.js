@@ -4,7 +4,6 @@ const session = require("express-session");
 const passport = require("passport");
 const appID = require("ibmcloud-appid");
 const dotenv = require('dotenv');
-const bodyParser = require("body-parser");
 const ibmdb = require('ibm_db');
 const cors = require('cors');
 
@@ -44,10 +43,10 @@ app.use(cors({
 }));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Configurar la sesion de la aplicacion
 const isProduction = env === "production";
@@ -56,13 +55,14 @@ const forceHttps = process.env.FORCE_HTTPS === "true" || isProduction;
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "coope-session-secret-key",
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     proxy: true,
     cookie: {
       secure: forceHttps,
       httpOnly: true,
-      sameSite: "lax"
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000
     }
   })
 );
@@ -135,16 +135,12 @@ app.get("/api/token", passport.authenticate(WebAppStrategy.STRATEGY_NAME),(req, 
 
 });
 
-// Ruta: Aplicacion Angular
-// Middleware: Auth user
+// Ruta: Aplicacion Angular (archivos estaticos JS, CSS, assets sin trigger de login)
 const angularDist = env === 'production' ? "/dist" : "/client/dist";
-app.use(
-	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
-	express.static(__dirname + angularDist)
-);
+app.use(express.static(__dirname + angularDist, { index: false }));
 
-// Fallback para Angular SPA (deep linking / refresco de pagina)
-app.get("*",
+// Ruta raiz y Fallback para Angular SPA (protegida con App ID)
+app.get("/{*splat}",
 	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
 	(req, res) => {
 		res.sendFile(path.join(__dirname, angularDist, "index.html"));
