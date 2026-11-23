@@ -78,10 +78,17 @@
     "type": "git"
   },
   "overrides": {
-    "webpack": "5.74.0",
     "@carbon/icons-angular": {
       "@angular/core": "12",
       "@angular/compiler": "12"
-    }
+    },
+    "adm-zip": "0.6.1",
+    "decode-uri-component": "0.5.1",
+    "loader-utils": "2.0.4",
+    "semver": "7.5.2",
+    "tmp": "0.2.7",
+    "uuid": "13.0.1",
+    "webpack": "5.113.0",
+    "webpack-dev-middleware": "8.3.0"
   }
 }
