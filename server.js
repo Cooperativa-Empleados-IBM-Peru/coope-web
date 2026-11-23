@@ -56,13 +56,14 @@ const forceHttps = process.env.FORCE_HTTPS === "true" || isProduction;
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "coope-session-secret-key",
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     proxy: true,
     cookie: {
       secure: forceHttps,
       httpOnly: true,
-      sameSite: "lax"
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000
     }
   })
 );
@@ -135,15 +136,11 @@ app.get("/api/token", passport.authenticate(WebAppStrategy.STRATEGY_NAME),(req, 
 
 });
 
-// Ruta: Aplicacion Angular
-// Middleware: Auth user
+// Ruta: Aplicacion Angular (archivos estaticos JS, CSS, assets sin trigger de login)
 const angularDist = env === 'production' ? "/dist" : "/client/dist";
-app.use(
-	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
-	express.static(__dirname + angularDist)
-);
+app.use(express.static(__dirname + angularDist, { index: false }));
 
-// Fallback para Angular SPA (deep linking / refresco de pagina)
+// Ruta raiz y Fallback para Angular SPA (protegida con App ID)
 app.get("*",
 	passport.authenticate(WebAppStrategy.STRATEGY_NAME),
 	(req, res) => {
