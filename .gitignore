@@ -1,5 +1,47 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Environment and local configs
 env.json
 env.ts
 localdev-config.json
 .env
+.env.*
+!.env.template
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Misc / logs / coverage
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+testem.log
+/typings
+*.tsbuildinfo
+
+# System files
+.DS_Store
+Thumbs.db
