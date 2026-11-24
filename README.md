@@ -46,36 +46,6 @@ Los menús de la aplicación son :
 ## Sobre el acceso
 El acceso a la aplicación se hace con el IBMId. Esto para permitir a los ex-empleados que son socios, que puedan acceder a la misma.  
 El acceso con w3Id solo permite acceso a los actuales empleados de IBM  
-El registro de la aplicación en IBMid se hace por la siguiente página :
-- https://ies-provisioner.prod.identity-services.intranet.ibm.com/tools/sso/home
+El registro de la aplicación en el SSO de IBMid se hace por la siguiente página :
+- https://w3.ibm.com/security/sso-provisioner
 
-## Seteo de variables de entorno
-Algunas variables de entorno usadas para conectarse a las bases de datos, o al IBMid (OpenId Connect)  
-se setean en travis, en el archivo *travis.yml* y en variables de entorno en la configuración de Travis.  
-Esto se hace asi por seguridad, pues no se pueden subir las llaves ni apikeys a Github.  
-  
-En Travis se define la siguiente variable para poder hacer deploy de la app en IBM Cloud.
-- CF_APIKEY
-  
-A los siguientes nombres de variables definidas en Travis, se les agrega al final **_DEV** o **_PROD** según la branch (*dev* o *master*)
-- APPID_ID
-- APPID_OAUTHURL
-- APPID_PROFILESURL
-- APPID_REDIRECTURL
-- APPID_SECRET
-- APPID_TENANTID
-  
-- CLOUDANT_PWD
-- CLOUDANT_URL
-- CLOUDANT_USER
-  
-- COOPEAPI_URL
-- COOPEAPI_APIKEY
-- COOPEAPI_SECRET
-  
-- DB2_DATABASE
-- DB2_HOSTNAME
-- DB2_PASSWORD
-- DB2_PORT
-- DB2_USERNAME
-- DB2_SCHEMA
