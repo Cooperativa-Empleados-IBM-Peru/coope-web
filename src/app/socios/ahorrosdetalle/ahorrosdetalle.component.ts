@@ -24,7 +24,7 @@ export class AhorrosdetalleComponent implements OnInit {
 	skeletonAhorroModel = Table.skeletonModel(10, 6);
 	skeletonahorro = true;
 
-	TituloTabla: string;
+	tituloTabla: string;
 	tempMonto: number;
 	tmpCuenta: string;
 	movdetalles: Movimientos;
@@ -41,72 +41,72 @@ constructor(public ibmidservice: IbmidService,
 
 ngOnInit(): void {
 
-    if (!this.ibmidservice.LoggedIn) {
+		if (!this.ibmidservice.LoggedIn) {
 			this.router.navigate(['/']);
 		} else {
 
-      this.modelAhorro = new TableModel();
+			this.modelAhorro = new TableModel();
 			this.modelAhorro.header = [
 				new TableHeaderItem({data: 'Fecha'}),
 				new TableHeaderItem({data: 'Código'}),
-        new TableHeaderItem({data: 'Descripción'}),
-        new TableHeaderItem({data: 'Referencia'}),
-        new TableHeaderItem({data: 'Importe'}),
+				new TableHeaderItem({data: 'Descripción'}),
+				new TableHeaderItem({data: 'Referencia'}),
+				new TableHeaderItem({data: 'Importe'}),
 				new TableHeaderItem({data: 'Saldo'}),
 			];
 
-      switch ( this.ahorrosservice.Tipo ) {
-        case 'miscelaneo' :
-          this.tipodesc = 'misceláneo';
-          break;
+			switch ( this.ahorrosservice.Tipo ) {
+				case 'miscelaneo' :
+					this.tipodesc = 'misceláneo';
+					break;
 
-        default :
-          this.tipodesc = this.ahorrosservice.Tipo;
-          break;
-      }
+				default :
+					this.tipodesc = this.ahorrosservice.Tipo;
+					break;
+			}
 
-      this.tempMonto = this.ahorrosservice.Monto;
-      this.TituloTabla = 'Saldo ' + this.tipodesc + ' (' + this.ahorrosservice.Moneda + ')';
+			this.tempMonto = this.ahorrosservice.Monto;
+			this.tituloTabla = 'Saldo ' + this.tipodesc + ' (' + this.ahorrosservice.Moneda + ')';
 
-      this.tmpCuenta = this.ahorrosservice.Moneda == 'soles' ? this.ibmidservice.CuentaSoles : this.ibmidservice.CuentaUsd;
+			this.tmpCuenta = this.ahorrosservice.Moneda === 'soles' ? this.ibmidservice.CuentaSoles : this.ibmidservice.CuentaUsd;
 
-      this.db2service.getMovimientosAhorroDetalle(this.tmpCuenta, this.ahorrosservice.Tipo).subscribe(
-        (resp: any) => {
+			this.db2service.getMovimientosAhorroDetalle(this.tmpCuenta, this.ahorrosservice.Tipo).subscribe(
+				(resp: any) => {
 
-          if (resp.length > 0 ) {
-            //loop through members to add Monto
-            for (var i = 0; i < resp.length; i++) {
-              this.movdetalles = resp[i];
-              this.movdetalles.saldo = this.tempMonto;
-              this.tempMonto -= this.movdetalles.importe;
-            }
+					if (resp.length > 0 ) {
+						// loop through members to add Monto
+						for (let i = 0; i < resp.length; i++) {
+							this.movdetalles = resp[i];
+							this.movdetalles.saldo = this.tempMonto;
+							this.tempMonto -= this.movdetalles.importe;
+						}
 
-            //fill table detalle
-            for (var i = resp.length - 1; i >= 0; i--) {
-              this.movdetalles = resp[i];
-              this.dateEmision = new Date(this.movdetalles.fecemision.trim());
+						// fill table detalle
+						for (let i = resp.length - 1; i >= 0; i--) {
+							this.movdetalles = resp[i];
+							this.dateEmision = new Date(this.movdetalles.fecemision.trim());
 
-              this.dataAhorro.push(
+							this.dataAhorro.push(
 								[new TableItem({data : formatDate( this.dateEmision, 'dd-MM-yyyy', this.locale) }),
 								new TableItem({data : this.movdetalles.transaccion.trim() }),
-                new TableItem({data : this.movdetalles.texto.trim() }),
-                new TableItem({data : this.movdetalles.refalfa.trim() }),
-                new TableItem({data : formatNumber( this.movdetalles.importe, this.locale,'1.2-2'), className: "titem-right" }),
-                new TableItem({data : formatNumber( this.movdetalles.saldo, this.locale,'1.2-2'), className: "titem-right" })
-              ]
+								new TableItem({data : this.movdetalles.texto.trim() }),
+								new TableItem({data : this.movdetalles.refalfa.trim() }),
+								new TableItem({data : formatNumber( this.movdetalles.importe, this.locale, '1.2-2'), className: 'titem-right' }),
+								new TableItem({data : formatNumber( this.movdetalles.saldo, this.locale, '1.2-2'), className: 'titem-right' })
+							]
 							);
 
-            }
+						}
 
-            this.modelAhorro.data = this.dataAhorro;
-            this.skeletonahorro = false;
+						this.modelAhorro.data = this.dataAhorro;
+						this.skeletonahorro = false;
 
-          }
-        }
-      );
+					}
+				}
+			);
 
-    }
+		}
 
-  }
+	}
 
 }

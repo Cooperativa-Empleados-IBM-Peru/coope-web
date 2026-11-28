@@ -13,7 +13,7 @@ import {
 	NotificationDisplayService,
 	PaginationModule
 } from 'carbon-components-angular';
-//import '@carbon/charts/styles.css';
+// import '@carbon/charts/styles.css';
 import { ChartsModule } from '@carbon/charts-angular';
 
 import { SociosRoutingModule } from './socios-routing.module';

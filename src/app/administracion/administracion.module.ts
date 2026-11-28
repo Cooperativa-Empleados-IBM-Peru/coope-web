@@ -35,10 +35,21 @@ import { ProveedorComponent } from './proveedor/proveedor.component';
 import { InsertproveedorComponent } from './proveedor/insertproveedor/insertproveedor.component';
 import { CategoriamodalComponent } from './categoriamodal/categoriamodal.component';
 
-import { QuillModule } from "ngx-quill";
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-	declarations: [ListasociosComponent, ServiciosComponent, InputmodalComponent, EditmodalComponent, DeletemodalComponent, InsertmodalComponent, DeleteimagenComponent, ProveedorComponent, InsertproveedorComponent, CategoriamodalComponent],
+	declarations: [
+		ListasociosComponent,
+		ServiciosComponent,
+		InputmodalComponent,
+		EditmodalComponent,
+		DeletemodalComponent,
+		InsertmodalComponent,
+		DeleteimagenComponent,
+		ProveedorComponent,
+		InsertproveedorComponent,
+		CategoriamodalComponent
+	],
 	imports: [
 		CommonModule,
 		AdministracionRoutingModule,
@@ -63,24 +74,24 @@ import { QuillModule } from "ngx-quill";
 		CheckmarkFilledModule,
 		QuillModule.forRoot({
 			modules: {
-			  toolbar: {
+				toolbar: {
 				container: [
-				  [{ 'size': ['small', false, 'large'] }],
-				  ['bold', 'italic', 'underline', 'strike'],
-				  [{ 'header': 1 }, { 'header': 2 }],
-				  [  { 'list': 'bullet' }],
-				  [{ 'script': 'sub' }, { 'script': 'super' }],
-				  [{ 'indent': '-1' }, { 'indent': '+1' }],
-				  [{ 'direction': 'rtl' }],
-				  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-				  [{ 'font': [] }],
-				  [{ 'align': [] }],
-				  ['clean'],
+					[{ 'size': ['small', false, 'large'] }],
+					['bold', 'italic', 'underline', 'strike'],
+					[{ 'header': 1 }, { 'header': 2 }],
+					[  { 'list': 'bullet' }],
+					[{ 'script': 'sub' }, { 'script': 'super' }],
+					[{ 'indent': '-1' }, { 'indent': '+1' }],
+					[{ 'direction': 'rtl' }],
+					[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+					[{ 'font': [] }],
+					[{ 'align': [] }],
+					['clean'],
 				],
 
 
 				},
-			  },
+				},
 			}),
 
 		QuillModule

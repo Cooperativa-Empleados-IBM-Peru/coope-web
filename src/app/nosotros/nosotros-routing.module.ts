@@ -12,7 +12,7 @@ const routes: Routes = [
 		{
 			path: 'historia',
 			component: HistoriaComponent
-		  },
+			},
 		{
 			path: 'funcionarios',
 			component: FuncionariosComponent

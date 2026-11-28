@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { PrestamosRoutingModule } from './prestamos-routing.module'; 
-import { TasasinteresComponent } from './tasasinteres/tasasinteres.component'; 
-import { SimuladorComponent } from './simulador/simulador.component'; 
-import { ASolafirmaComponent } from './asolafirma/asolafirma.component'; 
-import { ConsumoComponent } from './consumo/consumo.component'; 
-import { LargoplazoComponent } from './largoplazo/largoplazo.component'; 
-import { HipotecarioComponent } from './hipotecario/hipotecario.component'; 
-import { GarantiahipotecariaComponent } from './garantiahipotecaria/garantiahipotecaria.component'; 
-import { AutomotrizComponent } from './automotriz/automotriz.component'; 
-import { AcademicoComponent } from './academico/academico.component'; 
-import { EscolarComponent } from './escolar/escolar.component'; 
+import { PrestamosRoutingModule } from './prestamos-routing.module';
+import { TasasinteresComponent } from './tasasinteres/tasasinteres.component';
+import { SimuladorComponent } from './simulador/simulador.component';
+import { ASolafirmaComponent } from './asolafirma/asolafirma.component';
+import { ConsumoComponent } from './consumo/consumo.component';
+import { LargoplazoComponent } from './largoplazo/largoplazo.component';
+import { HipotecarioComponent } from './hipotecario/hipotecario.component';
+import { GarantiahipotecariaComponent } from './garantiahipotecaria/garantiahipotecaria.component';
+import { AutomotrizComponent } from './automotriz/automotriz.component';
+import { AcademicoComponent } from './academico/academico.component';
+import { EscolarComponent } from './escolar/escolar.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { OwlModule } from 'ngx-owl-carousel';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -31,7 +31,7 @@ import { CatalogModule, UserModule, TableOfContentsModule } from '@carbon/icons-
 
 @NgModule({
 	declarations: [TasasinteresComponent, SimuladorComponent, ASolafirmaComponent, ConsumoComponent,
-	LargoplazoComponent, 
+	LargoplazoComponent,
 	HipotecarioComponent,
 	GarantiahipotecariaComponent,
 	AutomotrizComponent,
@@ -54,7 +54,7 @@ import { CatalogModule, UserModule, TableOfContentsModule } from '@carbon/icons-
 		ListModule,
 		TableOfContentsModule
 	],
-	providers:[
+	providers: [
 		NotificationService,
 		NotificationDisplayService
 	]

@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { Db2Service } from '../../services/db2.service';
 
 @Component({
-  selector: 'app-deletemodal',
-  templateUrl: './deletemodal.component.html',
-  styleUrls: ['./deletemodal.component.scss']
+	selector: 'app-deletemodal',
+	templateUrl: './deletemodal.component.html',
+	styleUrls: ['./deletemodal.component.scss']
 })
 export class DeletemodalComponent extends BaseModal {
 
@@ -23,17 +23,17 @@ export class DeletemodalComponent extends BaseModal {
 
 		}
 
-  deleteSocio() {
+	deleteSocio() {
 	this.db2Service.deleteSocio(this.socio.uuid).subscribe(() => {
-	//	console.log('deleted');
+	// 	console.log('deleted');
 		this.redirectTo('/administracion/listasocios');
 		this.modalService.destroy();
 	});
-  }
+	}
 
-  redirectTo(uri: string) {
+	redirectTo(uri: string) {
 	this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
 	this.router.navigate([uri]));
-  }
+	}
 
 }

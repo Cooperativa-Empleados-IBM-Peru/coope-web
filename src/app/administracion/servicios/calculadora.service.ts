@@ -5,7 +5,7 @@ import { Prestamo } from './prestamo.model';
 import { Certificado } from './certificado.model';
 import { CloudantService } from '../../services/cloudant.service';
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class CalculadoraService {
 	private prestamos: Prestamo[] = [];
@@ -14,7 +14,7 @@ export class CalculadoraService {
 	private certificados: Certificado[] = [];
 	private dataCerti: Certificado[] = [];
 	private certificadoUpdated = new Subject<Certificado[]>();
-  constructor(public cloudantService: CloudantService) { }
+	constructor(public cloudantService: CloudantService) { }
 
 	getPrestamosPagos() {
 		this.cloudantService.getPrestamosPago()

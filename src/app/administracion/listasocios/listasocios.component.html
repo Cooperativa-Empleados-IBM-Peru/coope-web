@@ -47,9 +47,9 @@
                         <ibm-table-toolbar [model]="modelIbmer">
                             <ibm-table-toolbar-content>
                                 <ibm-table-toolbar-search
-                                    placeholder=" Search in the Table "
-									(search)="searchSociosIbm($event)"
-									(clear)="clearSearchSociosIbm()"
+                                    placeholder="Buscar en la tabla"
+         (search)="searchSociosIbm($event)"
+         (clear)="clearSearchSociosIbm()"
                                 ></ibm-table-toolbar-search>
                                 <button ibmButton="primary" size="sm" (click)="openModal(2)">
                                     Añadir<ibm-icon-add size="20" class="bx--btn__icon"></ibm-icon-add>
@@ -60,9 +60,10 @@
                             [skeleton]="skeletonibmer"
                             [model]="skeletonibmer ? skeletonIbmer : modelIbmer"
                             [showSelectionColumn]="false"
-                            [sortable]="false"
+                            [sortable]="true"
                             [striped]="false"
                             [stickyHeader]="false"
+                            (sort)="sortTab('ibmer', $event)"
                             (rowClick)="onRowClickIbmer($event)">
                         </ibm-table>
                         <ibm-pagination [model]="modelIbmer" (selectPage)="selectPageIbmer($event)"></ibm-pagination>
@@ -74,14 +75,14 @@
                     <ibm-table-container>
                         <ibm-table-header>
                             <h4 ibmTableHeaderTitle>Socios Empleados de KYNDRYL</h4>
-                            <p ibmTableHeaderDescription>socios ibm</p>
+                            <p ibmTableHeaderDescription>socios kyndryl</p>
 						</ibm-table-header>
                         <ibm-table-toolbar [model]="modelKyndryl">
                             <ibm-table-toolbar-content>
                                 <ibm-table-toolbar-search
-                                    placeholder=" Search in the Table "
-									(search)="searchSociosIbm($event)"
-									(clear)="clearSearchSociosIbm()"
+                                    placeholder="Buscar en la tabla"
+         (search)="searchSociosKyndryl($event)"
+         (clear)="clearSearchSociosKyndryl()"
                                 ></ibm-table-toolbar-search>
                                 <button ibmButton="primary" size="sm" (click)="openModal(2)">
                                     Añadir<ibm-icon-add size="20" class="bx--btn__icon"></ibm-icon-add>
@@ -92,10 +93,11 @@
                             [skeleton]="skeletonkyndryl"
                             [model]="skeletonkyndryl ? skeletonKyndryl : modelKyndryl"
                             [showSelectionColumn]="false"
-                            [sortable]="false"
+                            [sortable]="true"
                             [striped]="false"
                             [stickyHeader]="false"
-                            (rowClick)="onRowClickIbmer($event)">
+                            (sort)="sortTab('kyndryl', $event)"
+                            (rowClick)="onRowClickKyndryl($event)">
                         </ibm-table>
                         <ibm-pagination [model]="modelKyndryl" (selectPage)="selectPageKyndryl($event)"></ibm-pagination>
                     </ibm-table-container>
@@ -111,8 +113,8 @@
                         <ibm-table-toolbar [model]="modelExibmer">
                             <ibm-table-toolbar-content>
                                 <ibm-table-toolbar-search
-                                    placeholder=" Search in the Table "
-									(search)="searchJubilados($event)"
+                                    placeholder="Buscar en la tabla"
+         (search)="searchJubilados($event)"
 									(clear)="clearSearchJubilados()"
                                 ></ibm-table-toolbar-search>
                                 <button ibmButton="primary" size="sm" (click)="openModal(2)">
@@ -124,9 +126,10 @@
                             [skeleton]="skeletonexibmer"
                             [model]="skeletonexibmer ? skeletonExibmer : modelExibmer"
                             [showSelectionColumn]="false"
-                            [sortable]="false"
+                            [sortable]="true"
                             [striped]="false"
 							[stickyHeader]="false"
+							(sort)="sortTab('exibmer', $event)"
 							(rowClick)="onRowClickExIbmer($event)">
                         </ibm-table>
                         <ibm-pagination [model]="modelExibmer" (selectPage)="selectPageExIbmer($event)"></ibm-pagination>
@@ -143,8 +146,9 @@
                         <ibm-table-toolbar [model]="modelExSocio">
                             <ibm-table-toolbar-content>
                                 <ibm-table-toolbar-search
-                                    placeholder=" Search in the Table "
-                                 
+                                    placeholder="Buscar en la tabla"
+         (search)="searchExSocios($event)"
+         (clear)="clearSearchExSocios()"
                                 ></ibm-table-toolbar-search>
                                 <button ibmButton="primary" size="sm" (click)="openModal(2)">
                                     Añadir<ibm-icon-add size="20" class="bx--btn__icon"></ibm-icon-add>
@@ -155,9 +159,10 @@
                             [skeleton]="skeletonexsocio"
                             [model]="skeletonexsocio ? skeletonExSocio : modelExSocio"
                             [showSelectionColumn]="false"
-                            [sortable]="false"
+                            [sortable]="true"
                             [striped]="false"
 							[stickyHeader]="false"
+							(sort)="sortTab('exsocio', $event)"
 							(rowClick)="onRowClickExSocio($event)">
                         </ibm-table>
                         <ibm-pagination [model]="modelExSocio" (selectPage)="selectPageExSocio($event)"></ibm-pagination>

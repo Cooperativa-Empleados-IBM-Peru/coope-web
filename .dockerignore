@@ -8,3 +8,12 @@ npm-debug.log
 !.env.template
 # Cache used by TypeScript's incremental build
 *.tsbuildinfo
+# Not needed to build or run the image (changes here would otherwise invalidate the `COPY . .` build cache)
+e2e
+test
+out-tsc
+coverage
+*.md
+LICENSE
+Dockerfile
+.dockerignore

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ServiciosRoutingModule } from './servicios-routing.module'; 
-import { FondosepelioComponent } from './fondosepelio/fondosepelio.component'; 
-import { SeguroautosComponent } from './seguroautos/seguroautos.component'; 
-import { TelefoniacelularComponent } from './telefoniacelular/telefoniacelular.component'; 
-import { OncosaludComponent } from './oncosalud/oncosalud.component'; 
+import { ServiciosRoutingModule } from './servicios-routing.module';
+import { FondosepelioComponent } from './fondosepelio/fondosepelio.component';
+import { SeguroautosComponent } from './seguroautos/seguroautos.component';
+import { TelefoniacelularComponent } from './telefoniacelular/telefoniacelular.component';
+import { OncosaludComponent } from './oncosalud/oncosalud.component';
 
 
 import { CarouselModule } from 'ngx-owl-carousel-o';
@@ -44,7 +44,7 @@ import { CatalogModule, UserModule, TableOfContentsModule } from '@carbon/icons-
 		ListModule,
 		TableOfContentsModule
 	],
-	providers:[
+	providers: [
 		NotificationService,
 		NotificationDisplayService
 	]

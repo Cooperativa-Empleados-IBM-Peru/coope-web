@@ -19,9 +19,9 @@ import {
 	Link,
 	OverflowMenu,
 	OverflowMenuOption,
-  ModalService
+	ModalService
 } from 'carbon-components-angular';
-//CATEGORIA
+// CATEGORIA
 import { Categoria } from '../../avisos/proveedores/categoria.model';
 import { CategoriaService } from '../../avisos/proveedores/categoria.service';
 
@@ -30,9 +30,9 @@ import { DeleteimagenComponent } from '../deleteimagen/deleteimagen.component';
 import { InsertmodalComponent } from '../insertmodal/insertmodal.component';
 import { CategoriamodalComponent } from '../categoriamodal/categoriamodal.component';
 @Component({
-  selector: 'app-servicios',
-  templateUrl: './servicios.component.html',
-  styleUrls: ['./servicios.component.scss']
+	selector: 'app-servicios',
+	templateUrl: './servicios.component.html',
+	styleUrls: ['./servicios.component.scss']
 })
 export class ServiciosComponent implements OnInit {
 
@@ -63,7 +63,7 @@ export class ServiciosComponent implements OnInit {
 	limite2: any;
 	tasa2: any;
 	imagenes: Image[] = [];
-	certi = []
+	certi = [];
 
 	// URL Servicios
 	servicioUrl: Servicio;
@@ -74,28 +74,37 @@ export class ServiciosComponent implements OnInit {
 	skeletonservicio = true;
 
 	// Imagenes Carrousel
-	urlImage:Image;
-	imagenModal : Image;
+	urlImage: Image;
+	imagenModal: Image;
 	modelImagen: TableModel;
 	skeletonImagen = Table.skeletonModel(10, 3);
 	skeletonimagen = true;
 
-	//TABLA-CATEGORIA
+	// TABLA-CATEGORIA
 	categorias = [];
-	modelCategoria : TableModel;
+	modelCategoria: TableModel;
 	skeletoncate = false;
-	categoriaup : Categoria;
-	categoriaModal : Categoria;
-	skeletonCate = Table.skeletonModel(10,3);
+	categoriaup: Categoria;
+	categoriaModal: Categoria;
+	skeletonCate = Table.skeletonModel(10, 3);
 	dataCategorias: any;
-	nombre:String;
+	nombre: String;
+	@Input() modalText = 'Hello, World';
+	@Input() size = 'default';
+	@Input() data = '';
+
+	@ViewChild('overflowMenuItemTemplate', { static: false})
+	protected overflowMenuItemTemplate: TemplateRef<any>;
+
+	@ViewChild('overflowMenuTemplate', { static: false})
+	protected overflowMenuTemplate: TemplateRef<any>;
+
+	@ViewChild('overflowTemplate', { static: false})
+	protected overflowTemplate: TemplateRef<any>;
 
 	 private servicesSub: Subscription;
 	 private prestamosSub: Subscription;
 	 private certificadosSub: Subscription;
-	@Input() modalText = 'Hello, World';
-	@Input() size = 'default';
-	@Input() data = '';
 	constructor(protected modalService: ModalService,
 				public ibmidservice: IbmidService,
 				public urlService: UrlService,
@@ -103,15 +112,6 @@ export class ServiciosComponent implements OnInit {
 				public calculadoraService: CalculadoraService,
 				public cloudantService: CloudantService,
 				private router: Router) { }
-
-	@ViewChild("overflowMenuItemTemplate", { static: false})
-	protected overflowMenuItemTemplate: TemplateRef<any>;
-
-	@ViewChild("overflowMenuTemplate", { static: false})
-	protected overflowMenuTemplate: TemplateRef<any>;
-
-	@ViewChild("overflowTemplate", { static: false})
-	protected overflowTemplate: TemplateRef<any>;
 
 	ngOnInit(): void {
 		this.moneda = [
@@ -280,10 +280,10 @@ export class ServiciosComponent implements OnInit {
 	onChangeMax(event) {
 		this.maximo = event.target.value;
 	}
-	onChangeTasa(event){
+	onChangeTasa(event) {
 		this.tasa = event.target.value;
 	}
-	onChangeLimite(event){
+	onChangeLimite(event) {
 		this.limite = event.target.value;
 	}
 	updateCalculador() {
@@ -318,7 +318,7 @@ export class ServiciosComponent implements OnInit {
 			}
 		});
 	}
-	updateMonedaCertificado(event){
+	updateMonedaCertificado(event) {
 		this.tipoMoneda2 = event.item.content;
 		this.dataC.forEach(element => {
 			if (element.moneda === event.item.content  ) {
@@ -327,10 +327,10 @@ export class ServiciosComponent implements OnInit {
 			}
 		});
 	}
-	onChangeLimiteCertificado(event){
+	onChangeLimiteCertificado(event) {
 		this.limite2 = event.target.value;
 	}
-	onChangeTasaCertificado(event){
+	onChangeTasaCertificado(event) {
 		this.tasa2 = event.target.value;
 	}
 	updateCertificad() {
@@ -362,13 +362,14 @@ export class ServiciosComponent implements OnInit {
 			if (resp.total_rows > 0 ) {
 				this.modelServicio.totalDataLength = resp.total_rows;
 
-				for (let i = (page - 1) * this.modelServicio.pageLength ; i < page * this.modelServicio.pageLength && i < this.modelServicio.totalDataLength; i++) {
+				for (let i = (page - 1) * this.modelServicio.pageLength ;
+					i < page * this.modelServicio.pageLength && i < this.modelServicio.totalDataLength; i++) {
 				this.servicio = resp.rows[i].doc;
 
 				dataServicio.push(
 					[ new TableItem({data : this.servicio.nombre }),
 					new TableItem({data : this.servicio.url }),
-					new TableItem({data: { id: this.servicio._id, rev:this.servicio._rev }, template: this.overflowMenuItemTemplate})
+					new TableItem({data: { id: this.servicio._id, rev: this.servicio._rev }, template: this.overflowMenuItemTemplate})
 					]
 				);
 
@@ -381,8 +382,8 @@ export class ServiciosComponent implements OnInit {
 
 		});
 	}
-	onRowClickServicio(index: number){
-//		console.log(this.modelServicio.data[index]);
+	onRowClickServicio(index: number) {
+// 		console.log(this.modelServicio.data[index]);
 		this.servicioUrl = {
 					'_id': this.modelServicio.data[index][2].data.id,
 					'_rev': this.modelServicio.data[index][2].data.rev,
@@ -405,20 +406,21 @@ export class ServiciosComponent implements OnInit {
 			}
 		});
 	}
-	//Imagenes Corrusel
+	// Imagenes Corrusel
 	selectPageImagen(page) {
-        this.mostrarImagenes(page);
-        this.modelImagen.currentPage = page;
+				this.mostrarImagenes(page);
+				this.modelImagen.currentPage = page;
 	}
 
-	mostrarImagenes(page: number){
+	mostrarImagenes(page: number) {
 		const dataImagenes = [];
 		this.cloudantService.getImagenesUrl().subscribe(
 			(resp: any) => {
 				if ( resp.total_rows > 0 ) {
 					this.modelImagen.totalDataLength = resp.total_rows;
 
-					for (let i = (page - 1) * this.modelImagen.pageLength ; i < page * this.modelImagen.pageLength && i < this.modelImagen.totalDataLength; i++) {
+					for (let i = (page - 1) * this.modelImagen.pageLength ;
+						i < page * this.modelImagen.pageLength && i < this.modelImagen.totalDataLength; i++) {
 
 						this.urlImage = resp.rows[i].doc;
 
@@ -427,7 +429,7 @@ export class ServiciosComponent implements OnInit {
 								new TableItem({ data : this.urlImage.nombre }),
 								new TableItem({ data : this.urlImage.url}),
 								new TableItem({ data : this.urlImage.url2}),
-								new TableItem({data: { id: this.urlImage._id, rev:this.urlImage._rev }, template: this.overflowMenuTemplate})
+								new TableItem({data: { id: this.urlImage._id, rev: this.urlImage._rev }, template: this.overflowMenuTemplate})
 							]
 
 						);
@@ -470,7 +472,7 @@ export class ServiciosComponent implements OnInit {
 
 	}
 
-	deleteModalImagen(){
+	deleteModalImagen() {
 		this.modalText = 'Suprimir Imagen';
 		this.data = `la imagen ${this.imagenModal.nombre}`;
 		this.modalService.create({
@@ -499,42 +501,43 @@ export class ServiciosComponent implements OnInit {
 	selectPageCate(page) {
 		this.prepareDataCate(page);
 		this.modelCategoria.currentPage = page;
-	  }
+		}
 	prepareDataCate(page: number) {
 	const dataCat = [];
 	this.cloudantService.getCategorias().subscribe(
 		(resp: any) => {
-//			console.log(resp);
+// 			console.log(resp);
 			if ( resp.total_rows > 0 ) {
-			  this.modelCategoria.totalDataLength = resp.total_rows;
+				this.modelCategoria.totalDataLength = resp.total_rows;
 
-			  for (let i = (page - 1) * this.modelCategoria.pageLength ; i < page * this.modelCategoria.pageLength && i < this.modelCategoria.totalDataLength; i++) {
-				this.categoriaup =resp.rows[i].doc;
+				for (let i = (page - 1) * this.modelCategoria.pageLength ;
+					i < page * this.modelCategoria.pageLength && i < this.modelCategoria.totalDataLength; i++) {
+				this.categoriaup = resp.rows[i].doc;
 
 				dataCat.push(
-				  [ new TableItem({data : this.categoriaup.nombre }),
+					[ new TableItem({data : this.categoriaup.nombre }),
 					new TableItem({data : this.categoriaup.url }),
-					new TableItem({data: { id: this.categoriaup._id, rev:this.categoriaup._rev  }, template: this.overflowTemplate})
-				  ]
+					new TableItem({data: { id: this.categoriaup._id, rev: this.categoriaup._rev  }, template: this.overflowTemplate})
+					]
 				);
 
-			  }
+				}
 
-			  this.modelCategoria.data = dataCat;
-			  this.skeletoncate = false;
+				this.modelCategoria.data = dataCat;
+				this.skeletoncate = false;
 			}
 
-		  });
+			});
 	}
 
-	//CLICKROWCATGORIA
+	// CLICKROWCATGORIA
 	onRowClickCate(index: number) {
 			this.categoriaModal = {
 				'_id':  this.modelCategoria.data[index][2].data.id,
 				'_rev':   this.modelCategoria.data[index][2].data.rev,
 				'nombre': this.modelCategoria.data[index][0].data,
 				'url':    this.modelCategoria.data[index][1].data, };
-	//			console.log(this.modelCategoria.data[index]);
+	// 			console.log(this.modelCategoria.data[index]);
 	}
 
 	openModalCategoria(btn: number) {
@@ -545,10 +548,10 @@ export class ServiciosComponent implements OnInit {
 					case 2:
 						this.modalText = 'Añadir Categoria';
 						this.categoriaModal = {
-							'_id': '', 
+							'_id': '',
 							'_rev': '',
 							'nombre': '',
-							'url': '' 
+							'url': ''
 						};
 						break;
 				}
@@ -558,13 +561,13 @@ export class ServiciosComponent implements OnInit {
 						modalText: this.modalText,
 						size: this.size,
 						data: this.data,
-						categoriaup:this.categoriaModal,
+						categoriaup: this.categoriaModal,
 						btn: btn
 					}
 				});
 
 	}
-	//BORRAR CATEGORIA
+	// BORRAR CATEGORIA
 	deleteCategoria() {
 			this.modalText = 'Suprimir Categoria';
 			this.data = `la categoria ${this.categoriaModal.nombre}`;

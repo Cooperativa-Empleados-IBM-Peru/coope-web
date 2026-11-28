@@ -1,15 +1,17 @@
 const path = require("path");
 const express = require("express");
-const dotenv = require("dotenv");
 const cors = require("cors");
+
+// Configuracion del Dotenv (solo fuera de produccion: en produccion las variables vienen del entorno
+// y dotenv es una devDependency que no se instala en la imagen)
+if (process.env.NODE_ENV !== "production") {
+	require("dotenv").config();
+}
 
 const { setupAuth, requireAppIdLogin, requireAuth } = require("./libs/auth");
 const { handleDataApiProxy } = require("./libs/dataApiProxy");
 const { handleCloudantProxy } = require("./libs/cloudantProxy");
 const { authLog } = require("./libs/logger");
-
-// Configuracion del Dotenv
-dotenv.config();
 
 // Crear instancia Express
 const app = express();

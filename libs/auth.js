@@ -3,7 +3,8 @@ const session = require("express-session");
 const passport = require("passport");
 const appID = require("ibmcloud-appid");
 const { authLog, sessionSummary } = require("./logger");
-const { getInfo } = require("./db2");
+const { getAuthContext } = require("./session");
+const users = require("./users");
 
 const WebAppStrategy = appID.WebAppStrategy;
 const CALLBACK_URL = "/ibm/cloud/appid/callback";
@@ -13,8 +14,7 @@ const requireAppIdLogin = passport.authenticate(WebAppStrategy.STRATEGY_NAME, { 
 
 // Middleware: usuario autenticado para APIs (responde 401 en lugar de redirigir a login, para llamadas XHR)
 function requireAuth(req, res, next) {
-	const authContext = req.session && req.session[WebAppStrategy.AUTH_CONTEXT];
-	if (authContext && authContext.accessToken) {
+	if (getAuthContext(req)) {
 		return next();
 	}
 	res.status(401).json({ error: 'Unauthorized' });
@@ -146,18 +146,21 @@ function setupAuth(app, serviceUri) {
 		res.redirect("/");
 	});
 
-	// Ruta: Obtener el email y token de sesion
+	// Ruta: Obtener el email, token, uuid y rol (Admin) de la sesion.
+	// El uuid y el rol se obtienen de Db2 a traves de coope-backend (nunca directamente).
 	app.get("/api/token", requireAppIdLogin, (req, res) => {
-		const accessToken = req.session[WebAppStrategy.AUTH_CONTEXT].accessToken;
-		const email = req.session[WebAppStrategy.AUTH_CONTEXT].identityTokenPayload.email;
-		getInfo(email).then((uuid) => {
+		const authContext = req.session[WebAppStrategy.AUTH_CONTEXT];
+		const accessToken = authContext.accessToken;
+		const email = authContext.identityTokenPayload.email;
+		users.login(email).then((info) => {
 			res.json({
 				email: email,
 				token: accessToken,
-				uuid: uuid
+				uuid: info.uuid,
+				isAdmin: info.isAdmin
 			});
 		}).catch((err) => {
-			console.error("Error in /api/token getInfo:", err);
+			authLog('error', 'api/token user lookup failed', { error: err && err.message });
 			res.status(500).json({ error: "Failed to retrieve user info" });
 		});
 	});

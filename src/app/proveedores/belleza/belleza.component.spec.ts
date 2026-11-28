@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BellezaComponent } from './belleza.component';
 
 describe('BellezaComponent', () => {
-	let component:BellezaComponent;
+	let component: BellezaComponent;
 	let fixture: ComponentFixture< BellezaComponent>;
 
 	beforeEach(async(() => {
