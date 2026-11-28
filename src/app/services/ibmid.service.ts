@@ -430,8 +430,8 @@ get Uuid(): string {
 set Uuid(val: string) {
 	this.uuid = val;
 }
-public ready$ = this.readySource.asObservable();
-public isFetch = this.isFetchSource.asObservable();
+public ready$: Observable<boolean>;
+public isFetch: Observable<boolean>;
 
 private token: string;
 private loggedin: boolean;
@@ -496,6 +496,8 @@ private isFetchSource = new BehaviorSubject<boolean>(false);
 private readySource = new BehaviorSubject<boolean>(false);
 
 constructor(private http: HttpClient) {
+	this.ready$ = this.readySource.asObservable();
+	this.isFetch = this.isFetchSource.asObservable();
 	this.loggedin = false;
 	this.emailempleado = '';
 	this.codempleado = '';
