@@ -3,76 +3,76 @@ import {  Observable, Subject, Subscription } from 'rxjs';
 import { IbmidService } from '../../services/ibmid.service';
 import { Router } from '@angular/router';
 import { DeleteimagenComponent } from '../deleteimagen/deleteimagen.component';
-import { Proveedor} from '../../avisos/proveedores/proveedor.model';
+import { Proveedor } from '../../avisos/proveedores/proveedor.model';
 import { elementAt } from 'rxjs/operators';
-import { ProveedorService} from '../../avisos/proveedores/proveedor.service';
+import { ProveedorService } from '../../avisos/proveedores/proveedor.service';
 import {
-    Table,
-    TableModel,
-    TableItem,
-    TableHeaderItem,
-    Link,
-    OverflowMenu,
-    OverflowMenuOption,
-  ModalService
+		Table,
+		TableModel,
+		TableItem,
+		TableHeaderItem,
+		Link,
+		OverflowMenu,
+		OverflowMenuOption,
+	ModalService
 } from 'carbon-components-angular';
 
 import { CloudantService } from '../../services/cloudant.service';
 import { EditmodalComponent } from '../editmodal/editmodal.component';
 
 @Component({
-  selector: 'app-proveedor',
-  templateUrl: './proveedor.component.html',
-  styleUrls: ['./proveedor.component.scss']
+	selector: 'app-proveedor',
+	templateUrl: './proveedor.component.html',
+	styleUrls: ['./proveedor.component.scss']
 })
 export class ProveedorComponent implements OnInit {
 
 
-    proveedores :Proveedor[]=[];
-	prov=[];
-	cate=[];
-	descripcion : String;
-	especificaciones:String;
-	imagen : String;
-	catalogo:String;
-    id : String;
-	datos : any;
-	tipoproveedor:String;
-	categoria:String;
+		proveedores: Proveedor[] = [];
+	prov = [];
+	cate = [];
+	descripcion: String;
+	especificaciones: String;
+	imagen: String;
+	catalogo: String;
+		id: String;
+	datos: any;
+	tipoproveedor: String;
+	categoria: String;
 	dataProveedores: any;
 	modelProveedores: TableModel;
-	prove : Proveedor;
+	prove: Proveedor;
 	proveedorCoope: Proveedor;
 	skeletonIbmer = Table.skeletonModel(10, 3);
 	skeletonibmer = true;
 	copia: any;
 	proveedormodal: any;
 
-	  private proveedor: Subscription;
+		@Input() modalText;
+		@Input() data;
+		@Input() size = 'default';
 
-	  @Input() modalText;
-	  @Input() data;
-	  @Input() size = 'default';
+		@ViewChild('overflowMenuItemTemplate', { static: false})
+		protected overflowMenuItemTemplate: TemplateRef<any>;
 
-	  constructor(protected modalService: ModalService,
-				  public ibmidservice: IbmidService,
-				  public ProveedorService:ProveedorService,
-				  public CloudantService:CloudantService,
-				  private router: Router) { }
+		private proveedor: Subscription;
 
-	  @ViewChild("overflowMenuItemTemplate", { static: false})
-	  protected overflowMenuItemTemplate: TemplateRef<any>;
+		constructor(protected modalService: ModalService,
+					public ibmidservice: IbmidService,
+					public proveedorService: ProveedorService,
+					public cloudantService: CloudantService,
+					private router: Router) { }
 
-  ngOnInit(): void {
+	ngOnInit(): void {
 	this.descripcion = '';
-		this.imagen ='';
+		this.imagen = '';
 		this.catalogo = '';
-		this.categoria= '';
-		this.especificaciones= '';
+		this.categoria = '';
+		this.especificaciones = '';
 
 
-		/* this.ProveedorService.getProveedores();
-		this.proveedor = this.ProveedorService.getProveedorUpdateListener()
+		/* this.proveedorService.getProveedores();
+		this.proveedor = this.proveedorService.getProveedorUpdateListener()
 
 		.subscribe((proveedores:Proveedor[])=> {
 
@@ -94,17 +94,17 @@ export class ProveedorComponent implements OnInit {
 
 		});
 
-		this.ProveedorService.getProveedores(); */
+		this.proveedorService.getProveedores(); */
 
 
 
 		this.modelProveedores = new TableModel();
 		this.modelProveedores.header = [
-				  // new TableHeaderItem({data: 'Id Proveedor'}),
-				  new TableHeaderItem({data: 'Nombre del Proveedor'}),
-				  new TableHeaderItem({data: 'Categoria'}),
-				  // new TableHeaderItem({data: 'Activo'}),
-				  new TableHeaderItem({data: 'Acciones' })
+					// new TableHeaderItem({data: 'Id Proveedor'}),
+					new TableHeaderItem({data: 'Nombre del Proveedor'}),
+					new TableHeaderItem({data: 'Categoria'}),
+					// new TableHeaderItem({data: 'Activo'}),
+					new TableHeaderItem({data: 'Acciones' })
 		];
 
 		// this.modelProveedores.data=this.dataProveedores;
@@ -112,46 +112,46 @@ export class ProveedorComponent implements OnInit {
 		this.selectPageProveedor(1);
 
 
-  }
+	}
 
-  selectPageProveedor(page) {
+	selectPageProveedor(page) {
 	this.prepareDataProveedor(page);
 	this.modelProveedores.currentPage = page;
-  }
-  prepareDataProveedor(page: number) {
+	}
+	prepareDataProveedor(page: number) {
 	const dataProveedores = [];
 
-	  this.CloudantService.getProveedores().subscribe(
+		this.cloudantService.getProveedores().subscribe(
 		(resp: any) => {
-	//	console.log(resp);
-		  if (resp.total_rows > 0 ) {
-			//this.copia = resp.rows;
-			//console.log(this.copia);
+	// 	console.log(resp);
+			if (resp.total_rows > 0 ) {
+			// this.copia = resp.rows;
+			// console.log(this.copia);
 			this.modelProveedores.totalDataLength = resp.total_rows;
 			// tslint:disable-next-line: max-line-length
 			for (let i = (page - 1) * this.modelProveedores.pageLength ; i < page * this.modelProveedores.pageLength && i < this.modelProveedores.totalDataLength; i++) {
-			  this.prove = resp.rows[i].doc;
+				this.prove = resp.rows[i].doc;
 
-			  dataProveedores.push(
+				dataProveedores.push(
 				[
-				  new TableItem({data : this.prove.nombre }),
-				  new TableItem({data : this.prove.categoria }),
+					new TableItem({data : this.prove.nombre }),
+					new TableItem({data : this.prove.categoria }),
 				new TableItem({data: { id: this.prove._id, rev: this.prove._rev }, template: this.overflowMenuItemTemplate})
 
 				]
-			  );
+				);
 
 			}
 
 			this.modelProveedores.data = dataProveedores;
 			this.skeletonibmer = false;
 
-		  }
+			}
 
-	  });
+		});
 	}
 
-	onRowClickProveedor(index: number){
+	onRowClickProveedor(index: number) {
 		this.proveedormodal = {
 			'_id': this.modelProveedores.data[index][2].data.id,
 			'_rev': this.modelProveedores.data[index][2].data.rev,
@@ -160,15 +160,15 @@ export class ProveedorComponent implements OnInit {
 		};
 	 }
 
-	 editProveedor(btn: number){
-		if(btn === 1) {
+	 editProveedor(btn: number) {
+		if (btn === 1) {
 			this.router.navigate(['administracion/editar-proveedor', this.proveedormodal._id]);
 		} else {
 			this.router.navigate(['administracion/editar-proveedor']);
 		}
 
 	 }
-	 deleteProveedor(){
+	 deleteProveedor() {
 		 /* this.modalService.create({
 			component: DeleteimagenComponent,
 			inputs:{
@@ -196,7 +196,7 @@ export class ProveedorComponent implements OnInit {
 	 }
 
 	 redirectTo(uri: string) {
-		this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+		this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
 		this.router.navigate([uri]));
 	 }
 

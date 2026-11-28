@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ProveedoresRoutingModule } from './proveedores-routing.module'; 
-import { TecnologiahogarComponent } from './tecnologiahogar/tecnologiahogar.component'; 
+import { ProveedoresRoutingModule } from './proveedores-routing.module';
+import { TecnologiahogarComponent } from './tecnologiahogar/tecnologiahogar.component';
 import { ProductoshogarComponent } from './productoshogar/productoshogar.component';
 import { PasteleriaComponent } from './pasteleria/pasteleria.component';
 import { VinosComponent } from './vinos/vinos.component';
@@ -32,9 +32,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { CatalogModule, UserModule, TableOfContentsModule } from '@carbon/icons-angular';
 
 @NgModule({
-	declarations: [TecnologiahogarComponent, ProductoshogarComponent, PasteleriaComponent, 
+	declarations: [TecnologiahogarComponent, ProductoshogarComponent, PasteleriaComponent,
 		VinosComponent, MascotasComponent, MenajeComponent, BellezaComponent,
-		ViajesComponent,GimnasiosComponent, RestaurantesComponent, AutomotrizComponent],
+		ViajesComponent, GimnasiosComponent, RestaurantesComponent, AutomotrizComponent],
 	imports: [
 		CommonModule,
 		ProveedoresRoutingModule,
@@ -52,7 +52,7 @@ import { CatalogModule, UserModule, TableOfContentsModule } from '@carbon/icons-
 		ListModule,
 		TableOfContentsModule
 	],
-	providers:[
+	providers: [
 		NotificationService,
 		NotificationDisplayService
 	]

@@ -7,24 +7,24 @@ import { IbmidService } from '../../services/ibmid.service';
 import { UrlService } from '../../administracion/servicios/url.service';
 import { Servicio } from '../../administracion/servicios/servicio.model';
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+	selector: 'app-header',
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.scss']
 })
 
 export class HeaderComponent implements OnInit {
-  @HostBinding('class.bx--header') headerClass = true;
+	@HostBinding('class.bx--header') headerClass = true;
 
-  sidemenuactive = false;
-  hasHamburger = true;
-  servicios: Servicio[] = [];
+	sidemenuactive = false;
+	hasHamburger = true;
+	servicios: Servicio[] = [];
 	private servicesSub: Subscription;
 
 constructor(public ibmidservice: IbmidService,
 	public urlService: UrlService,
 	private router: Router) { }
 
-	
+
 	ngOnInit(): void {
 			this.urlService.getServicios();
 			this.servicesSub = this.urlService.getServiceUpdateListener()

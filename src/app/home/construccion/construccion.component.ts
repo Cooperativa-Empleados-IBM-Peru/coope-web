@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-//import { LoadingModule } from 'carbon-components-angular';
+// import { LoadingModule } from 'carbon-components-angular';
 
 @Component({
 	selector: 'app-construccion',
@@ -8,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConstruccionComponent implements OnInit {
 
+	sizeload = 'normal';
+
 	constructor() { }
-	
-	sizeload = "normal";
 
 	ngOnInit(): void {
 	}

@@ -12,32 +12,32 @@ import { Subscription } from 'rxjs/internal/Subscription';
 })
 export class FuncionariosComponent implements OnInit {
 	imagenes: Image[] = [];
-	size= "normal";
+	size = 'normal';
 	isActive = true;
 	private servicesSub: Subscription;
 	constructor(public ibmidservice: IbmidService,
 	public urlImageService: UrlImageService) { }
-	
+
 	ngOnInit(): void {
 		this.urlImageService.getServicios();
 		this.servicesSub = this.urlImageService.getImagenUpdateListener()
 		.subscribe((imagene: Image[]) => {
 			this.imagenes = imagene;
 		});
-		
-		var acc = document.getElementsByClassName("accordion");
-		var i;
-	
+
+		const acc = document.getElementsByClassName('accordion');
+		let i;
+
 		for (i = 0; i < acc.length; i++) {
-		  acc[i].addEventListener("click", function () {
-			this.classList.toggle("active");
-			var panel = this.nextElementSibling;
+			acc[i].addEventListener('click', function () {
+			this.classList.toggle('active');
+			const panel = this.nextElementSibling;
 			if (panel.style.maxHeight) {
-			  panel.style.maxHeight = null;
+				panel.style.maxHeight = null;
 			} else {
-			  panel.style.maxHeight = panel.scrollHeight + "px";
+				panel.style.maxHeight = panel.scrollHeight + 'px';
 			}
-		  });
+			});
 		}
 	}
 }

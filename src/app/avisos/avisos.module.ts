@@ -42,7 +42,7 @@ import { CatalogModule, UserModule, TableOfContentsModule } from '@carbon/icons-
 		ListModule,
 		TableOfContentsModule
 	],
-	providers:[
+	providers: [
 		NotificationService,
 		NotificationDisplayService
 	]

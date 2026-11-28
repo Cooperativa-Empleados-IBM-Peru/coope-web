@@ -7,25 +7,25 @@ import { NoticiasComponent } from './noticias/noticias.component';
 import { ProveedoresdetalleComponent } from './proveedoresdetalle/proveedoresdetalle.component';
 const routes: Routes = [
 		{
-		  path: 'proveedores',
-		  component: ProveedoresComponent
+			path: 'proveedores',
+			component: ProveedoresComponent
 		},
 		{
 			path: 'internos',
 			component: InternosComponent
-		  },
-		  {
+			},
+			{
 			path: 'noticias',
 			component: NoticiasComponent
-		  },
-		  {
-			  path: 'proveedordetalle/:id',
-			  component: ProveedoresdetalleComponent
-		  },
-		  {
+			},
+			{
+				path: 'proveedordetalle/:id',
+				component: ProveedoresdetalleComponent
+			},
+			{
 			path: 'proveedores/:categoria',
 			component: ProveedoresComponent
-		  }
+			}
 ];
 
 @NgModule({

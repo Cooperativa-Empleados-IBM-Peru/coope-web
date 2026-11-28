@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { IbmidService } from '../../services/ibmid.service';
 import { Db2Service } from '../../services/db2.service';
 import { AhorrosService } from '../../services/ahorros.service';
-//import { CuentasDetalleAhorro } from '../../classes/cuentasdetalleahorro';
+// import { CuentasDetalleAhorro } from '../../classes/cuentasdetalleahorro';
 import {
 	Table,
 	TableModel,
@@ -43,20 +43,20 @@ export class AhorrosComponent implements OnInit {
 		lowContrast: false
 	};
 
-	constructor(public ibmidservice : IbmidService,
-				public db2service : Db2Service,
-				private ahorrosservice : AhorrosService,
-				private router: Router,
-				protected notificationService: NotificationService,
-    			protected notificationDisplayService: NotificationDisplayService,
-				@Inject(LOCALE_ID) private locale: string
-				) { }
-
-	@ViewChild("activeItemTemplate")
+	@ViewChild('activeItemTemplate')
 	protected activeItemTemplate: TemplateRef<any>;
 
-	@ViewChild("inactiveItemTemplate")
+	@ViewChild('inactiveItemTemplate')
 	protected inactiveItemTemplate: TemplateRef<any>;
+
+	constructor(public ibmidservice: IbmidService,
+				public db2service: Db2Service,
+				private ahorrosservice: AhorrosService,
+				private router: Router,
+				protected notificationService: NotificationService,
+					protected notificationDisplayService: NotificationDisplayService,
+				@Inject(LOCALE_ID) private locale: string
+				) { }
 
 	ngOnInit(): void {
 
@@ -78,7 +78,7 @@ export class AhorrosComponent implements OnInit {
 				new TableHeaderItem({data: 'Dólares'}),
 			];
 
-			if(this.ibmidservice.Uuid) {
+			if (this.ibmidservice.Uuid) {
 
 				const saldocontsol = this.ibmidservice.SaldoContableSol;
 				const saldocontusd = this.ibmidservice.SaldoContableUsd;
@@ -98,83 +98,83 @@ export class AhorrosComponent implements OnInit {
 				setTimeout(() => {
 
 					const rowcontable = new TableRow(
-						new TableItem({data: "Contable"}), 
-						new TableItem({data : {name : formatNumber(saldocontsol, this.locale,'1.2-2'),
-							tipo : "contable", moneda : "soles", monto : saldocontsol },
-							template: saldocontsol != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"}),
-						new TableItem({data : {name : formatNumber(saldocontusd, this.locale,'1.2-2'),
-							tipo : "contable", moneda : "usd", monto : saldocontusd},
-							template: saldocontusd != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"})
+						new TableItem({data: 'Contable'}),
+						new TableItem({data : {name : formatNumber(saldocontsol, this.locale, '1.2-2'),
+							tipo : 'contable', moneda : 'soles', monto : saldocontsol },
+							template: saldocontsol !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'}),
+						new TableItem({data : {name : formatNumber(saldocontusd, this.locale, '1.2-2'),
+							tipo : 'contable', moneda : 'usd', monto : saldocontusd},
+							template: saldocontusd !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'})
 					);
-	
+
 					const rowdisponible = new TableRow(
-						new TableItem({data: "Disponible"}), 
-						new TableItem({data : formatNumber(saldodispahorrosol, this.locale,'1.2-2'), className: "titem-right"}),
-						new TableItem({data : formatNumber(saldodispahorrousd, this.locale,'1.2-2'), className: "titem-right"})
+						new TableItem({data: 'Disponible'}),
+						new TableItem({data : formatNumber(saldodispahorrosol, this.locale, '1.2-2'), className: 'titem-right'}),
+						new TableItem({data : formatNumber(saldodispahorrousd, this.locale, '1.2-2'), className: 'titem-right'})
 					);
-	
+
 					const rowbloqueado = new TableRow(
-						new TableItem({data: "Bloqueado"}), 
+						new TableItem({data: 'Bloqueado'}),
 						new TableItem({data : {name : formatNumber(saldobloqueoahorrosol, this.locale, '1.2-2'),
-							tipo : "bloqueado", moneda : "soles", monto : saldobloqueoahorrosol},
-							template: saldobloqueoahorrosol != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"}),
-						   new TableItem({data : {name : formatNumber(saldobloqueoahorrousd, this.locale,'1.2-2'),
-							tipo : "bloqueado", moneda : "usd", monto : saldobloqueoahorrousd},
-							template: saldobloqueoahorrousd != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							classname: "titem-right"})
+							tipo : 'bloqueado', moneda : 'soles', monto : saldobloqueoahorrosol},
+							template: saldobloqueoahorrosol !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'}),
+							new TableItem({data : {name : formatNumber(saldobloqueoahorrousd, this.locale, '1.2-2'),
+							tipo : 'bloqueado', moneda : 'usd', monto : saldobloqueoahorrousd},
+							template: saldobloqueoahorrousd !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							classname: 'titem-right'})
 						);
-	
+
 					const rowintereses = new TableRow(
-							new TableItem({data: "Intereses por Pagar"}), 
-							new TableItem({data : formatNumber(intahorromessol, this.locale,'1.2-2'), className: "titem-right"}),
-							new TableItem({data : formatNumber(intahorromesusd, this.locale,'1.2-2'), className: "titem-right"})
+							new TableItem({data: 'Intereses por Pagar'}),
+							new TableItem({data : formatNumber(intahorromessol, this.locale, '1.2-2'), className: 'titem-right'}),
+							new TableItem({data : formatNumber(intahorromesusd, this.locale, '1.2-2'), className: 'titem-right'})
 					);
-		
+
 					const rowaportaciones = new TableRow(
-						new TableItem({data: "Aportaciones"}), 
-						new TableItem({data : {name : formatNumber(saldoaportacionsol, this.locale,'1.2-2'),
-							tipo : "aportaciones", moneda : "soles", monto : saldoaportacionsol},
-							template: saldoaportacionsol != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"}),
-						new TableItem({data : {name : formatNumber(saldoaportacionusd, this.locale,'1.2-2'),
-							tipo : "aportaciones", moneda : "usd", monto : saldoaportacionusd},
-							template: saldoaportacionusd != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"})
+						new TableItem({data: 'Aportaciones'}),
+						new TableItem({data : {name : formatNumber(saldoaportacionsol, this.locale, '1.2-2'),
+							tipo : 'aportaciones', moneda : 'soles', monto : saldoaportacionsol},
+							template: saldoaportacionsol !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'}),
+						new TableItem({data : {name : formatNumber(saldoaportacionusd, this.locale, '1.2-2'),
+							tipo : 'aportaciones', moneda : 'usd', monto : saldoaportacionusd},
+							template: saldoaportacionusd !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'})
 					);
-	
+
 					const rowmiscelaneo = new TableRow(
-						new TableItem({data: "Intereses por PagarMisceláneo"}), 
+						new TableItem({data: 'Intereses por PagarMisceláneo'}),
 						new TableItem({data : {name : formatNumber(saldomiscelaneosol, this.locale, '1.2-2'),
-							tipo : "miscelaneo", moneda: "soles", monto : saldomiscelaneosol},
-							template: saldomiscelaneosol != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"}),
-						new TableItem({data : {name : formatNumber(saldomiscelaneousd, this.locale,'1.2-2'),
-							tipo : "miscelaneo", moneda : "usd", monto : saldomiscelaneousd },
-							template: saldomiscelaneousd != 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
-							className: "titem-right"})
+							tipo : 'miscelaneo', moneda: 'soles', monto : saldomiscelaneosol},
+							template: saldomiscelaneosol !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'}),
+						new TableItem({data : {name : formatNumber(saldomiscelaneousd, this.locale, '1.2-2'),
+							tipo : 'miscelaneo', moneda : 'usd', monto : saldomiscelaneousd },
+							template: saldomiscelaneousd !== 0 ? this.activeItemTemplate : this.inactiveItemTemplate,
+							className: 'titem-right'})
 						);
-	
+
 					const rowinteresmisc = new TableRow(
-						new TableItem({data: "Intereses por Pagar"}), 
-						new TableItem({data : formatNumber(intmiscelaneomessol, this.locale,'1.2-2'), className: "titem-right"}),
-						new TableItem({data : formatNumber(intmiscelaneomesusd, this.locale,'1.2-2'), className: "titem-right"})
+						new TableItem({data: 'Intereses por Pagar'}),
+						new TableItem({data : formatNumber(intmiscelaneomessol, this.locale, '1.2-2'), className: 'titem-right'}),
+						new TableItem({data : formatNumber(intmiscelaneomesusd, this.locale, '1.2-2'), className: 'titem-right'})
 					);
-	
-	
+
+
 					this.dataAhorro = [
 						rowcontable, rowdisponible, rowbloqueado, rowintereses, rowaportaciones
 					];
-	
+
 					this.modelAhorro.data = this.dataAhorro;
 					this.skeletonahorro = false;
-	
+
 					this.dataMisc = [
 						rowmiscelaneo, rowinteresmisc
 					];
-	
+
 					this.modelMisc.data = this.dataMisc;
 					this.skeletonmisc = false;
 
@@ -185,7 +185,7 @@ export class AhorrosComponent implements OnInit {
 
 	}
 
-	openAhorroDetalle(tipo : string, moneda : string, monto : number) {
+	openAhorroDetalle(tipo: string, moneda: string, monto: number) {
 		this.ahorrosservice.Tipo = tipo;
 		this.ahorrosservice.Moneda = moneda;
 		this.ahorrosservice.Monto = monto;
@@ -194,7 +194,7 @@ export class AhorrosComponent implements OnInit {
 
 	closeNotificationBanner() {
 		this.notificationService.close(this.notificationObject);
-   		// this.notificationService.onClose.closed=true;
+				// this.notificationService.onClose.closed=true;
 		this.notificationDisplayService.close(this.notificationObject);
 	}
 }

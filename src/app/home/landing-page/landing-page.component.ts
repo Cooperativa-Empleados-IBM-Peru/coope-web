@@ -13,11 +13,33 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
 export class LandingPageComponent implements OnInit {
 
 	imagenes: Image[] = [];
-	size= "normal";
+	size = 'normal';
 	isActive = true;
+	customOptions: any = {
+		loop: true,
+		mouseDrag: true,
+		navSpeed: 700,
+		autoplay: true,
+			autoplayTimeout: 7000,
+			autoplayHoverPause: true,
+		responsive: {
+			0: {
+			items: 1
+			},
+			400: {
+			items: 1
+			},
+			740: {
+			items: 1
+			},
+			940: {
+			items: 1
+			}
+		},
+		};
 	private servicesSub: Subscription;
 	constructor(public ibmidservice: IbmidService,
-				public urlImageService: UrlImageService){ }
+				public urlImageService: UrlImageService) { }
 
 	ngOnInit(): void {
 		this.urlImageService.getServicios();
@@ -29,27 +51,5 @@ export class LandingPageComponent implements OnInit {
 	}
 	openModal() {
 	}
-	customOptions: any = {
-		loop: true,
-		mouseDrag: true,
-		navSpeed: 700,
-		autoplay: true,
-    	autoplayTimeout: 7000,
-    	autoplayHoverPause: true,
-		responsive: {
-		  0: {
-			items: 1
-		  },
-		  400: {
-			items: 1
-		  },
-		  740: {
-			items: 1
-		  },
-		  940: {
-			items: 1
-		  }
-		},
-	  }
 }
 

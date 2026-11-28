@@ -8,113 +8,6 @@ import { catchError } from 'rxjs/operators';
 })
 export class IbmidService {
 
-private token: string;
-private loggedin: boolean;
-
-private activo: boolean;
-private certsolmontos: number;
-private certsolvalor: number;
-private certusdmontos: number;
-private certusdvalor: number;
-private codempleado: string;
-private codpais: string;
-private company: string;
-private ctasoles: string;
-private ctausd: string;
-private ctssolmontos: number;
-private ctssolvalor: number;
-private ctsusdmontos: number;
-private ctsusdvalor: number;
-private direccionempleado: string;
-private emailempleado: string;
-private inbluepages: boolean;
-private intahorromessol: number;
-private intahorromesusd: number;
-private intmiscelaneomessol: number;
-private intmiscelaneomesusd: number;
-private isadmin: boolean;
-private nombreempleado: string;
-private saldoaportacionsol: number;
-private saldoaportacionusd: number;
-private saldobloqueoahorrosol: number;
-private saldobloqueoahorrousd: number;
-private saldocontablesol: number;
-private saldocontableusd: number;
-private saldodispahorrosol: number;
-private saldodispahorrousd: number;
-private saldomiscelaneosol: number;
-private saldomiscelaneousd: number;
-private solsaldopresauto: number;
-private solsaldopresconsumo: number;
-private solsaldoprescortoplazo: number;
-private solsaldopresesp1: number;
-private solsaldopresesp2: number;
-private solsaldopreshipotecario: number;
-private solsaldopreslargoplazo: number;
-private solsaldopresmedianoplazo: number;
-private solsaldopresps1: number;
-private solsaldopressolafirma: number;
-private usdsaldopresauto: number;
-private usdsaldopresconsumo: number;
-private usdsaldoprescortoplazo: number;
-private usdsaldopresesp1: number;
-private usdsaldopresesp2: number;
-private usdsaldopreshipotecario: number;
-private usdsaldopreslargoplazo: number;
-private usdsaldopresmedianoplazo: number;
-private usdsaldopresps1: number;
-private usdsaldopressolafirma: number;
-private uuid: string;
-
-private isFetchSource = new BehaviorSubject<boolean>(false);
-// Emits true once the session lookup (/api/token) has finished, successfully or not
-private readySource = new BehaviorSubject<boolean>(false);
-public ready$ = this.readySource.asObservable();
-public isFetch = this.isFetchSource.asObservable();
-
-constructor(private http: HttpClient) {
-	this.loggedin = false;
-	this.emailempleado = '';
-	this.codempleado = '';
-	this.isadmin = false;
-	this.uuid  = '';
-
-	const subscribeToken = this.requestToken().subscribe((response: any) => {
-		if ( response.token ) {
-			this.token = response.token;
-			this.emailempleado = response.email;
-			this.uuid = response.uuid;
-			// Admin role: the user is listed in the VWCOOPEADMINS view (resolved by the server)
-			this.isadmin = response.isAdmin === true;
-			this.isFetchSource.next(true);
-			this.readySource.next(true);
-			subscribeToken.unsubscribe();
-		}
-	}, () => {
-		// Fail closed: without a verified session nobody is an Admin
-		this.isadmin = false;
-		this.readySource.next(true);
-	});
-}
-
-/* requestEmail(): Observable<{}> {
-	return this.http.get(`/api/token`, this.httpOptions())
-.pipe(catchError(this.handleError));
-} */
-
-requestToken(): Observable<{}> {
-	return this.http.get(`/api/token`, this.httpOptions())
-.pipe(catchError(this.handleError));
-}
-
-public setToken(token: string): void {
-	this.token = token;
-}
-
-public getToken(): string {
-return this.token;
-}
-
 get LoggedIn(): boolean {
 	return this.loggedin;
 }
@@ -536,6 +429,113 @@ get Uuid(): string {
 }
 set Uuid(val: string) {
 	this.uuid = val;
+}
+public ready$ = this.readySource.asObservable();
+public isFetch = this.isFetchSource.asObservable();
+
+private token: string;
+private loggedin: boolean;
+
+private activo: boolean;
+private certsolmontos: number;
+private certsolvalor: number;
+private certusdmontos: number;
+private certusdvalor: number;
+private codempleado: string;
+private codpais: string;
+private company: string;
+private ctasoles: string;
+private ctausd: string;
+private ctssolmontos: number;
+private ctssolvalor: number;
+private ctsusdmontos: number;
+private ctsusdvalor: number;
+private direccionempleado: string;
+private emailempleado: string;
+private inbluepages: boolean;
+private intahorromessol: number;
+private intahorromesusd: number;
+private intmiscelaneomessol: number;
+private intmiscelaneomesusd: number;
+private isadmin: boolean;
+private nombreempleado: string;
+private saldoaportacionsol: number;
+private saldoaportacionusd: number;
+private saldobloqueoahorrosol: number;
+private saldobloqueoahorrousd: number;
+private saldocontablesol: number;
+private saldocontableusd: number;
+private saldodispahorrosol: number;
+private saldodispahorrousd: number;
+private saldomiscelaneosol: number;
+private saldomiscelaneousd: number;
+private solsaldopresauto: number;
+private solsaldopresconsumo: number;
+private solsaldoprescortoplazo: number;
+private solsaldopresesp1: number;
+private solsaldopresesp2: number;
+private solsaldopreshipotecario: number;
+private solsaldopreslargoplazo: number;
+private solsaldopresmedianoplazo: number;
+private solsaldopresps1: number;
+private solsaldopressolafirma: number;
+private usdsaldopresauto: number;
+private usdsaldopresconsumo: number;
+private usdsaldoprescortoplazo: number;
+private usdsaldopresesp1: number;
+private usdsaldopresesp2: number;
+private usdsaldopreshipotecario: number;
+private usdsaldopreslargoplazo: number;
+private usdsaldopresmedianoplazo: number;
+private usdsaldopresps1: number;
+private usdsaldopressolafirma: number;
+private uuid: string;
+
+private isFetchSource = new BehaviorSubject<boolean>(false);
+// Emits true once the session lookup (/api/token) has finished, successfully or not
+private readySource = new BehaviorSubject<boolean>(false);
+
+constructor(private http: HttpClient) {
+	this.loggedin = false;
+	this.emailempleado = '';
+	this.codempleado = '';
+	this.isadmin = false;
+	this.uuid  = '';
+
+	const subscribeToken = this.requestToken().subscribe((response: any) => {
+		if ( response.token ) {
+			this.token = response.token;
+			this.emailempleado = response.email;
+			this.uuid = response.uuid;
+			// Admin role: the user is listed in the VWCOOPEADMINS view (resolved by the server)
+			this.isadmin = response.isAdmin === true;
+			this.isFetchSource.next(true);
+			this.readySource.next(true);
+			subscribeToken.unsubscribe();
+		}
+	}, () => {
+		// Fail closed: without a verified session nobody is an Admin
+		this.isadmin = false;
+		this.readySource.next(true);
+	});
+}
+
+/* requestEmail(): Observable<{}> {
+	return this.http.get(`/api/token`, this.httpOptions())
+.pipe(catchError(this.handleError));
+} */
+
+requestToken(): Observable<{}> {
+	return this.http.get(`/api/token`, this.httpOptions())
+.pipe(catchError(this.handleError));
+}
+
+public setToken(token: string): void {
+	this.token = token;
+}
+
+public getToken(): string {
+return this.token;
 }
 
 

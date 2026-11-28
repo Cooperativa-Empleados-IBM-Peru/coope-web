@@ -8,7 +8,7 @@ import { ProveedorService } from './proveedor.service';
 import { CategoriaService } from './categoria.service';
 import { CloudantService } from '../../services/cloudant.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { OwlOptions } from "ngx-owl-carousel-o";
+import { OwlOptions } from 'ngx-owl-carousel-o';
 
 @Component({
 	selector: 'app-proveedores',
@@ -20,6 +20,34 @@ export class ProveedoresComponent implements OnInit {
 
 	 proveedores: Proveedor[]  = [];
 	 categorias: Categoria[] = [];
+
+	customOptions: OwlOptions = {
+		loop: true,
+		mouseDrag: true,
+		touchDrag: false,
+		pullDrag: false,
+		dots: false,
+		navSpeed: 700,
+		autoplay: true,
+		autoplayTimeout: 3000,
+		autoplayHoverPause: true,
+		navText: ['', ''],
+		responsive: {
+			0: {
+			items: 1
+			},
+			400: {
+			items: 2
+			},
+			740: {
+			items: 3
+			},
+			940: {
+			items: 4
+			}
+		},
+		nav: true
+		};
 	 // products: Productos[];
 	 // dataca:categorias[];
 	 private categoria: string;
@@ -49,21 +77,24 @@ export class ProveedoresComponent implements OnInit {
 			this.categorias = categoria;
 		});
 
-		this.mediaSub = this.mediaObserver.asObservable().subscribe(change=> {change.forEach((v) => {console.log(v.mediaQuery,v.mqAlias);}); });
+		this.mediaSub = this.mediaObserver.asObservable().subscribe(change => {
+			change.forEach((v) => {console.log(v.mediaQuery, v.mqAlias); });
+		});
 
 		this.route.paramMap.subscribe((paramMap: ParamMap) => {
-		//	console.log(paramMap.get('categoria'));
+		// 	console.log(paramMap.get('categoria'));
 			this.categoria = paramMap.get('categoria');
-			if(this.categoria) {
+			if (this.categoria) {
 				const query = {
-					"fields": ["_id", "_rev", "nombre", "categoria", "image", "descripcion", "especificaciones", "catalogo", "pedido" , "contacto", "activo"],
-					"selector": {
-					  "categoria": {
-						"$eq": this.categoria
-					  }
+					'fields': ['_id', '_rev', 'nombre', 'categoria', 'image',
+						'descripcion', 'especificaciones', 'catalogo', 'pedido' , 'contacto', 'activo'],
+					'selector': {
+						'categoria': {
+						'$eq': this.categoria
+						}
 					}
-				  }
-				this.cloudantService.getProveedoresByCategoria(query).subscribe((data)=> {
+					};
+				this.cloudantService.getProveedoresByCategoria(query).subscribe((data) => {
 					this.proveedores = data.docs;
 				});
 			} else {
@@ -71,11 +102,11 @@ export class ProveedoresComponent implements OnInit {
 				this.proveedorSub = this.proveedorService.getProveedorUpdateListener()
 				.subscribe((proveedores: Proveedor[]) => {
 					this.proveedores = proveedores;
-	//				console.log(this.proveedores);
+	// 				console.log(this.proveedores);
 				});
 			}
 
-		  });
+			});
 	}
 
 	openDetalle (id: string) {
@@ -83,43 +114,15 @@ export class ProveedoresComponent implements OnInit {
 	}
 
 	filterProveedor(categoria: string) {
-		if(categoria=='Todos') {
+		if (categoria === 'Todos') {
 			this.redirectTo('/avisos/proveedores');
-		}else if(categoria !='Todos'){
+		} else if (categoria !== 'Todos') {
 			this.router.navigate(['avisos/proveedores', categoria]); }
 	}
 	redirectTo(uri: string) {
 		this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
 		this.router.navigate([uri]));
 	}
-
-	customOptions: OwlOptions = {
-		loop: true,
-		mouseDrag: true,
-		touchDrag: false,
-		pullDrag: false,
-		dots: false,
-		navSpeed: 700,
-		autoplay: true,
-		autoplayTimeout: 3000,
-		autoplayHoverPause: true,
-		navText: ["", ""],
-		responsive: {
-		  0: {
-			items: 1
-		  },
-		  400: {
-			items: 2
-		  },
-		  740: {
-			items: 3
-		  },
-		  940: {
-			items: 4
-		  }
-		},
-		nav: true
-	  };
 
 }
 

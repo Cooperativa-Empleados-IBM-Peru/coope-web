@@ -17,7 +17,7 @@ export class UrlImageService {
 	getServicios() {
 		this.cloudantService.getImagenesUrl()
 		 .pipe(map((imagenData) => {
-			return imagenData.rows.map(imagen=> {
+			return imagenData.rows.map(imagen => {
 				return {
 					_id: imagen.doc._id,
 					_rev: imagen.doc._rev,
@@ -34,11 +34,11 @@ export class UrlImageService {
 		});
 	}
 
-	getImagenUpdateListener(){
+	getImagenUpdateListener() {
 		return this.imagenUpdated.asObservable();
 	}
 
-	updateImages(id: string, url: string){
+	updateImages(id: string, url: string) {
 		this.dataStore.forEach((t, i) => {
 			if ( t._id === id) {
 				t.url = url;

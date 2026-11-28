@@ -4,27 +4,27 @@ import { SocioService } from '../listasocios/socio.service';
 import { Router } from '@angular/router';
 import { Db2Service } from '../../services/db2.service';
 @Component({
-  selector: 'app-editmodal',
-  templateUrl: './editmodal.component.html',
-  styleUrls: ['./editmodal.component.scss']
+	selector: 'app-editmodal',
+	templateUrl: './editmodal.component.html',
+	styleUrls: ['./editmodal.component.scss']
 })
 export class EditmodalComponent extends BaseModal {
 
 	activo: string;
 	blue: string;
 	comp = 'IBM';
-  constructor(
-    @Inject('modalText') public modalText,
+	constructor(
+		@Inject('modalText') public modalText,
 	@Inject('size') public size,
 	@Inject('data') public data,
 	@Inject('socio') public socio,
-    protected modalService: ModalService,
+		protected modalService: ModalService,
 	public socioService: SocioService,
 	private router: Router,
 	public db2Service: Db2Service,
 	protected notificationService: NotificationService,
-    protected notificationDisplayService: NotificationDisplayService
-  ) { super();
+		protected notificationDisplayService: NotificationDisplayService
+	) { super();
 
 	}
 
@@ -39,24 +39,24 @@ export class EditmodalComponent extends BaseModal {
 		this.comp = event.value;
 	}
 
-  	onChangeEmail(event) {
+		onChangeEmail(event) {
 		this.socio.emailempleado = event.target.value;
 	}
 	onChangeEmail2(event) {
 		this.socio.emailempleado2 = event.target.value;
 	}
-  	onChangeName(event) {
+		onChangeName(event) {
 		this.socio.nombreempleado = event.target.value;
 	}
 	onChangeActivo(event) {
-	//	console.log(event.value);
+	// 	console.log(event.value);
 		this.activo = event.value;
 	}
 	onChangeBlue(event) {
 		this.blue = event.value;
 	}
 	updateSelected(event) {
-	//	console.log(event.item.content);
+	// 	console.log(event.item.content);
 	}
 
 	saveSocio(btn: number) {

@@ -22,16 +22,16 @@ import {
 import { DownloadModule } from '@carbon/icons-angular';
 
 @NgModule({
-  declarations: [CalcpagosComponent, CalccertificadosComponent, ReglamentocreditoComponent, TasasinteresComponent],
-  imports: [
-    CommonModule,
-    HerramientasRoutingModule,
-    GridModule,
-    InputModule,
-    ButtonModule,
-    ComboBoxModule,
-    TableModule,
-    DownloadModule
-  ]
+	declarations: [CalcpagosComponent, CalccertificadosComponent, ReglamentocreditoComponent, TasasinteresComponent],
+	imports: [
+		CommonModule,
+		HerramientasRoutingModule,
+		GridModule,
+		InputModule,
+		ButtonModule,
+		ComboBoxModule,
+		TableModule,
+		DownloadModule
+	]
 })
 export class HerramientasModule { }

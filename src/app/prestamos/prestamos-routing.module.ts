@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-//import { PrestamosComponent } from './prestamos/prestamos.component';
+// import { PrestamosComponent } from './prestamos/prestamos.component';
 import { TasasinteresComponent } from './tasasinteres/tasasinteres.component';
 import { SimuladorComponent } from './simulador/simulador.component';
 import { ASolafirmaComponent } from './asolafirma/asolafirma.component';
@@ -14,47 +14,47 @@ import { AcademicoComponent } from './academico/academico.component';
 import { EscolarComponent } from './escolar/escolar.component';
 
 const routes: Routes = [
-		
-		  {
+
+			{
 			path: 'tasasinteres',
 			component: TasasinteresComponent
-		  },
-		  {
+			},
+			{
 			path: 'simulador',
 			component: SimuladorComponent
-		  },
-		  {
+			},
+			{
 			path: 'asolafirma',
 			component: ASolafirmaComponent
-		  },
-		  {
+			},
+			{
 			path: 'consumo',
 			component: ConsumoComponent
-		  },
-		  {
+			},
+			{
 			path: 'largoplazo',
 			component: LargoplazoComponent
-		  },
-		  {
+			},
+			{
 			path: 'hipotecario',
 			component: HipotecarioComponent
-		  },
-		  {
+			},
+			{
 			path: 'garantiahipotecaria',
 			component: GarantiahipotecariaComponent
-		  },
-		  {
+			},
+			{
 			path: 'automotriz',
 			component: AutomotrizComponent
-		  },
-		  {
+			},
+			{
 			path: 'academico',
 			component: AcademicoComponent
-		  },
-		  {
+			},
+			{
 			path: 'escolar',
 			component: EscolarComponent
-		  },
+			},
 ];
 
 @NgModule({

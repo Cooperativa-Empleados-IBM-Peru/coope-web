@@ -12,9 +12,9 @@ import { Prestamo } from '../../administracion/servicios/prestamo.model';
 import { CalculadoraService } from '../../administracion/servicios/calculadora.service';
 
 @Component({
-  selector: 'app-calcpagos',
-  templateUrl: './calcpagos.component.html',
-  styleUrls: ['./calcpagos.component.scss']
+	selector: 'app-calcpagos',
+	templateUrl: './calcpagos.component.html',
+	styleUrls: ['./calcpagos.component.scss']
 })
 export class CalcpagosComponent implements OnInit {
 
@@ -49,7 +49,7 @@ export class CalcpagosComponent implements OnInit {
 	modelCalc: TableModel;
 	skeletonCalcModel = Table.skeletonModel(10, 10);
 	skeletoncalc = false;
-	capital:String;
+	capital: String;
 	interesMes: Number;
 	monto1: Number;
 	interes1: Number;
@@ -194,8 +194,8 @@ export class CalcpagosComponent implements OnInit {
 
 updateSelected2(event) {
 	this.m1 = event.item.content;
-//	console.log(this.p1);
-//	console.log(this.m1);
+// 	console.log(this.p1);
+// 	console.log(this.m1);
 
 	this.dataPrestamo.forEach(element => {
 		if (element.moneda === event.item.content  ) {
@@ -218,14 +218,14 @@ onChangeCapital(event) {
 
 updateSelected3(event) {
 	this.periodoAmortizacion = event.item.content;
-	let x1,x2,x3,x4;
+	let x1, x2, x3, x4;
 	this.amortizaciones.forEach(element => {
 		if (event.item.content === String(element)) {
-//			console.log(element);
-            this.meses = 12;
-            this.interesMes = (Number(this.interesAnual) / 100) / (Number(this.meses) * element);
-            this.monto1 = Number(this.interesMes) * Number(this.prestamoValor);
-            this.interes1 = 1 + Number(this.interesMes);
+// 			console.log(element);
+						this.meses = 12;
+						this.interesMes = (Number(this.interesAnual) / 100) / (Number(this.meses) * element);
+						this.monto1 = Number(this.interesMes) * Number(this.prestamoValor);
+						this.interes1 = 1 + Number(this.interesMes);
 			this.interes2 = Math.pow(Number(this.interes1), (Number(this.meses) * element));
 			x1 = ((Number(this.monto1) * Number(this.interes2)) / (Number(this.interes2) - 1)).toFixed(2);
 			this.pagoMensual = x1;
@@ -233,18 +233,18 @@ updateSelected3(event) {
 			this.pagoAnual = x2;
 			x3 = (x2 * element).toFixed(2);
 			this.pagos = x3;
-            x4 = (x3 - Number(this.prestamoValor)).toFixed(2);
-            this.intereses = x4;
-        }
+						x4 = (x3 - Number(this.prestamoValor)).toFixed(2);
+						this.intereses = x4;
+				}
 	});
 }
-updateSelected4(event){
+updateSelected4(event) {
 	this.a1 = event.item.content;
-//	console.log(this.a1);
+// 	console.log(this.a1);
 }
-updateSelected5(event){
+updateSelected5(event) {
 	this.mo1 = event.item.content;
-//	console.log(this.mo1);
+// 	console.log(this.mo1);
 }
 
 newCalculo() {
@@ -252,56 +252,64 @@ newCalculo() {
 }
 
 mostrarTablita() {
-	let calcu = [];
-	let anio = []
-	let saldo_inicial = [];
-	let pagos = [];
-	let intereses = [];
-	let principal = [];
-	let interesesacum = [];
-	let principalacum = [];
-	let saldofinal = [];
+	const calcu = [];
+	const anio = [];
+	const saldoInicial = [];
+	const pagos = [];
+	const intereses = [];
+	const principal = [];
+	const interesesacum = [];
+	const principalacum = [];
+	const saldofinal = [];
 	let cont = 1;
-	let intMensual = (Number(this.interesAnual)/100)/(12*Number(this.periodoAmortizacion));
+	const intMensual = (Number(this.interesAnual) / 100) / (12 * Number(this.periodoAmortizacion));
 	let auxPrestamo = Number(this.prestamoValor);
-	let auxpago = Number(this.pagoMensual);
+	const auxpago = Number(this.pagoMensual);
 	let auxInteres = auxPrestamo * intMensual;
 	let auxPrincipal = auxpago - auxInteres;
 	let auxPrincipalAcum = auxPrincipal;
 	let auxInteresAcum = auxInteres;
 	let auxSaldoFinal = auxPrestamo - auxPrincipal;
 	let mes = this.mo1;
-	if(mes == "Enero"){mes = "January"} else if(mes == "Abril"){mes = "April"} else if(mes == "Agosto"){mes = "August"} else if(mes == "Diciembre"){mes = "December"};
-	let año = this.a1;
-	let x = mes + "-01-" + año;
-	var y =  new Date(x);
-	var monthNameList = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"];
-	let tablon = [];
+	if (mes === 'Enero') {
+		mes = 'January';
+	} else if (mes === 'Abril') {
+		mes = 'April';
+	} else if (mes === 'Agosto') {
+		mes = 'August';
+	} else if (mes === 'Diciembre') {
+		mes = 'December';
+	}
+	const año = this.a1;
+	const x = mes + '-01-' + año;
+	const y =  new Date(x);
+	const monthNameList = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const tablon = [];
 
-	for (var i = 0; i < 12 * Number(this.periodoAmortizacion); i++) {
-		  if(cont == 1) {
+	for (let i = 0; i < 12 * Number(this.periodoAmortizacion); i++) {
+			if (cont === 1) {
 
-		  anio.push(y.getFullYear());
-		  saldo_inicial.push(auxPrestamo.toFixed(2));
-		  pagos.push(auxpago.toFixed(2));
-		  intereses.push(auxInteres.toFixed(2));
-		  principal.push(auxPrincipal.toFixed(2));
-		  interesesacum.push(auxInteresAcum.toFixed(2));
-		  principalacum.push(auxPrincipalAcum.toFixed(2));
-		  saldofinal.push(auxSaldoFinal.toFixed(2));
-		  calcu.push([
-				  new TableItem({data: 1}),
-				  new TableItem({data: monthNameList[y.getMonth()]}),
-				  new TableItem({data: y.getFullYear()}),
-				  new TableItem({data: auxPrestamo.toFixed(2)}),
-				  new TableItem({data: auxpago.toFixed(2)}),
-				  new TableItem({data: auxPrincipal.toFixed(2)}),
-				  new TableItem({data: auxInteres.toFixed(2)}),
-				  new TableItem({data: auxPrincipalAcum.toFixed(2)}),
-				  new TableItem({data: auxInteresAcum.toFixed(2)}),
-				  new TableItem({data: auxSaldoFinal.toFixed(2)})
-		  ]);
-	  } else if (cont === 12 * Number(this.periodoAmortizacion)) {
+			anio.push(y.getFullYear());
+			saldoInicial.push(auxPrestamo.toFixed(2));
+			pagos.push(auxpago.toFixed(2));
+			intereses.push(auxInteres.toFixed(2));
+			principal.push(auxPrincipal.toFixed(2));
+			interesesacum.push(auxInteresAcum.toFixed(2));
+			principalacum.push(auxPrincipalAcum.toFixed(2));
+			saldofinal.push(auxSaldoFinal.toFixed(2));
+			calcu.push([
+					new TableItem({data: 1}),
+					new TableItem({data: monthNameList[y.getMonth()]}),
+					new TableItem({data: y.getFullYear()}),
+					new TableItem({data: auxPrestamo.toFixed(2)}),
+					new TableItem({data: auxpago.toFixed(2)}),
+					new TableItem({data: auxPrincipal.toFixed(2)}),
+					new TableItem({data: auxInteres.toFixed(2)}),
+					new TableItem({data: auxPrincipalAcum.toFixed(2)}),
+					new TableItem({data: auxInteresAcum.toFixed(2)}),
+					new TableItem({data: auxSaldoFinal.toFixed(2)})
+			]);
+		} else if (cont === 12 * Number(this.periodoAmortizacion)) {
 		auxPrestamo = auxPrestamo - auxPrincipal;
 		auxInteres = auxPrestamo * intMensual;
 		auxPrincipal = auxpago - auxInteres;
@@ -311,14 +319,14 @@ mostrarTablita() {
 		y.setMonth(y.getMonth() + 1);
 
 		anio.push(y.getFullYear());
-		saldo_inicial.push(Number(auxPrestamo.toFixed(2)));
+		saldoInicial.push(Number(auxPrestamo.toFixed(2)));
 		pagos.push(Number(auxpago.toFixed(2)));
 		intereses.push(Number(auxInteres.toFixed(2)));
 		principal.push(Number(auxPrincipal.toFixed(2)));
 		interesesacum.push(Number(auxInteresAcum.toFixed(2)));
 		principalacum.push(Number(auxPrincipalAcum.toFixed(2)));
 		saldofinal.push(Number(auxSaldoFinal.toFixed(2)));
-	  calcu.push([
+		calcu.push([
 		new TableItem({data: cont}),
 		new TableItem({data: monthNameList[y.getMonth()]}),
 		new TableItem({data: y.getFullYear()}),
@@ -329,7 +337,7 @@ mostrarTablita() {
 		new TableItem({data: auxPrincipalAcum.toFixed(2)}),
 		new TableItem({data: auxInteresAcum.toFixed(2)}),
 		new TableItem({data: 0})
-	  ]);
+		]);
 
 	} else {
 		auxPrestamo = auxPrestamo - auxPrincipal;
@@ -341,14 +349,14 @@ mostrarTablita() {
 		y.setMonth(y.getMonth() + 1);
 
 		anio.push(y.getFullYear());
-		saldo_inicial.push(Number(auxPrestamo.toFixed(2)));
+		saldoInicial.push(Number(auxPrestamo.toFixed(2)));
 		pagos.push(Number(auxpago.toFixed(2)));
 		intereses.push(Number(auxInteres.toFixed(2)));
 		principal.push(Number(auxPrincipal.toFixed(2)));
 		interesesacum.push(Number(auxInteresAcum.toFixed(2)));
 		principalacum.push(Number(auxPrincipalAcum.toFixed(2)));
 		saldofinal.push(Number(auxSaldoFinal.toFixed(2)));
-	  calcu.push([
+		calcu.push([
 		new TableItem({data: cont}),
 		new TableItem({data: monthNameList[y.getMonth()]}),
 		new TableItem({data: y.getFullYear()}),
@@ -359,44 +367,44 @@ mostrarTablita() {
 		new TableItem({data: auxPrincipalAcum.toFixed(2)}),
 		new TableItem({data: auxInteresAcum.toFixed(2)}),
 		new TableItem({data: auxSaldoFinal.toFixed(2)})
-	  ]);
+		]);
 	}
-		cont = cont + 1
-  }
+		cont = cont + 1;
+	}
 	this.modelCalc.data = calcu;
 
-	let calcu2 = [];
+	const calcu2 = [];
 	let cont2 = 1;
-	let saldo_ini = 0;
+	const saldoIni = 0;
 	let pagoss = 0;
 	let principall = 0;
 	let interesess = 0;
-	for (var i = 0; i < 12* Number(this.periodoAmortizacion); i++) {
+	for (let i = 0; i < 12 * Number(this.periodoAmortizacion); i++) {
 		pagoss = pagoss + Number(pagos[i]);
 		principall = principall + Number(principal[i]);
 		interesess = interesess + Number(intereses[i]);
-		if (cont2 == 0 ){
-			if(anio[i] !== anio[i-1]){
+		if (cont2 === 0 ) {
+			if (anio[i] !== anio[i - 1]) {
 				calcu2.push([
-					new TableItem({data: anio[i-1]}),
-                    new TableItem({data: (saldo_inicial[i] + principall-Number(principal[i])).toFixed(2)}),
-                    new TableItem({data: (pagoss-Number(pagos[i])).toFixed(2)}),
-                    new TableItem({data: (principall-Number(principal[i])).toFixed(2)}),
-                    new TableItem({data: (interesess-Number(intereses[i])).toFixed(2)}),
-                    new TableItem({data: (principalacum[i-1]).toFixed(2)}),
-                    new TableItem({data: (interesesacum[i-1]).toFixed(2)}),
-                    new TableItem({data: (saldofinal[i-1]).toFixed(2)})
+					new TableItem({data: anio[i - 1]}),
+										new TableItem({data: (saldoInicial[i] + principall - Number(principal[i])).toFixed(2)}),
+										new TableItem({data: (pagoss - Number(pagos[i])).toFixed(2)}),
+										new TableItem({data: (principall - Number(principal[i])).toFixed(2)}),
+										new TableItem({data: (interesess - Number(intereses[i])).toFixed(2)}),
+										new TableItem({data: (principalacum[i - 1]).toFixed(2)}),
+										new TableItem({data: (interesesacum[i - 1]).toFixed(2)}),
+										new TableItem({data: (saldofinal[i - 1]).toFixed(2)})
 				]);
 				pagoss = Number(pagos[i]);
-                principall = Number(principal[i]);
+								principall = Number(principal[i]);
 				interesess = Number(intereses[i]);
 			}
 
 		}
-		if (i == (12 * Number(this.periodoAmortizacion) - 1)) {
+		if (i === (12 * Number(this.periodoAmortizacion) - 1)) {
 			calcu2.push([
 				new TableItem({data: anio[i]}),
-				new TableItem({data: (saldo_inicial[i] + principall - Number(principal[i])).toFixed(2)}),
+				new TableItem({data: (saldoInicial[i] + principall - Number(principal[i])).toFixed(2)}),
 				new TableItem({data: pagoss.toFixed(2)}),
 				new TableItem({data: principall.toFixed(2)}),
 				new TableItem({data: interesess.toFixed(2)}),
@@ -408,13 +416,13 @@ mostrarTablita() {
 		cont2 = 0;
 	}
 	this.modelProgram.data = calcu2;
-  }
+	}
 
 	redirectTo(uri: string) {
 		this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
 		this.router.navigate([uri]));
 	}
-	exportAsPdf(){
+	exportAsPdf() {
 		/* const DATA = document.getElementById('htmlData');
 		const doc = new jsPDF('p', 'pt', 'a4');
 		const options = {

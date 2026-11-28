@@ -11,20 +11,20 @@ const routes: Routes = [
 		{
 			path: 'fondosepelio',
 			component: FondosepelioComponent
-		  },
-		  {
+			},
+			{
 			path: 'seguroautos',
 			component: SeguroautosComponent
-		  },
-		  {
+			},
+			{
 			path: 'telefoniacelular',
 			component: TelefoniacelularComponent
-		  },
-		  {
+			},
+			{
 			path: 'oncosalud',
 			component: OncosaludComponent
-		  },
-		
+			},
+
 ];
 
 @NgModule({

@@ -39,12 +39,12 @@ export class InputmodalComponent extends BaseModal {
 	updateUrl() {
 		if ( this.btn === 1) {
 			// UpdateServices
-			if(this.url) { this.servicio.url = this.url; }
-			if(this.name) { this.servicio.nombre = this.name; }
+			if (this.url) { this.servicio.url = this.url; }
+			if (this.name) { this.servicio.nombre = this.name; }
 
-			this.cloudantService.updateServiciosUrl(this.servicio._id, this.servicio).subscribe((response: any)=>{
+			this.cloudantService.updateServiciosUrl(this.servicio._id, this.servicio).subscribe((response: any) => {
 				this.servicio._rev = response.rev;
-		//		console.log('url updated');
+		// 		console.log('url updated');
 				this.redirectTo('/administracion/servicios');
 				this.modalService.destroy();
 			});
@@ -52,11 +52,11 @@ export class InputmodalComponent extends BaseModal {
 
 		} else {
 			/* this.urlImageService.updateImages(this.servicio._id, this.url); */
-			if(this.url) { this.servicio.url = this.url; }
-			if(this.name) { this.servicio.nombre = this.name; }
-			const data = {'nombre': this.name, 'url': this.url}
-			this.cloudantService.insertServiciosUrl(data).subscribe((response: any)=>{
-		//		console.log('new service');
+			if (this.url) { this.servicio.url = this.url; }
+			if (this.name) { this.servicio.nombre = this.name; }
+			const data = {'nombre': this.name, 'url': this.url};
+			this.cloudantService.insertServiciosUrl(data).subscribe((response: any) => {
+		// 		console.log('new service');
 				this.redirectTo('/administracion/servicios');
 				this.modalService.destroy();
 			});

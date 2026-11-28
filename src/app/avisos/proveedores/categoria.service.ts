@@ -4,7 +4,7 @@ import { CloudantService } from '../../services/cloudant.service';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class CategoriaService {
 
@@ -12,8 +12,8 @@ export class CategoriaService {
 	private dataStore: Categoria[] = [];
 	private categoriaUpdated = new Subject<Categoria[]>();
 
-  constructor(public cloudantService: CloudantService) { }
-  getCategorias() {
+	constructor(public cloudantService: CloudantService) { }
+	getCategorias() {
 	this.cloudantService.getCategorias()
 	 .pipe(map((categoriaData) => {
 		return categoriaData.rows.map(categoria => {

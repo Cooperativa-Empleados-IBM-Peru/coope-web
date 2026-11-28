@@ -7,7 +7,7 @@ import { Proveedor } from './proveedor.model';
 import { CloudantService } from '../../services/cloudant.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class ProveedorService {
 

@@ -6,29 +6,29 @@ import { UIShellModule } from 'carbon-components-angular/ui-shell/ui-shell.modul
 import { UserAvatarComponent, UserAvatarFilledComponent } from '@carbon/icons-angular';
 
 describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+	let component: HeaderComponent;
+	let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ]
-    })
-    .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [ HeaderComponent ]
+		})
+		.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(HeaderComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 
-  TestBed.configureTestingModule({
+	TestBed.configureTestingModule({
 		declarations: [HeaderComponent],
 		imports: [UIShellModule, UserAvatarComponent, UserAvatarFilledComponent]
-	  });
+		});
 
 });

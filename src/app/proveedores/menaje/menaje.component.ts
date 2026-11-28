@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 export class MenajeComponent implements OnInit {
 
 	imagenes: Image[] = [];
-	size= "normal";
+	size = 'normal';
 	isActive = true;
 	private servicesSub: Subscription;
 	constructor(public ibmidservice: IbmidService,

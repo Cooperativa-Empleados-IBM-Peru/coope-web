@@ -24,7 +24,7 @@ export class InternosComponent implements OnInit {
 	}
 	closeNotificationBanner() {
 		this.notificationService.close(this.notificationObject);
-   		// this.notificationService.onClose.closed=true;
+				// this.notificationService.onClose.closed=true;
 		this.notificationDisplayService.close(this.notificationObject);
 	}
 }

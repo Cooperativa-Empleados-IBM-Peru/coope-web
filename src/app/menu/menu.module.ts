@@ -10,16 +10,16 @@ import { SidemenuComponent } from './sidemenu/sidemenu.component';
 // import { IbmidService } from '../services/ibmid.service';
 
 @NgModule({
-  declarations: [HeaderComponent, SidemenuComponent],
-  imports: [
-    CommonModule,
-    MenuRoutingModule,
-    UIShellModule,
-    UserAvatarModule,
+	declarations: [HeaderComponent, SidemenuComponent],
+	imports: [
+		CommonModule,
+		MenuRoutingModule,
+		UIShellModule,
+		UserAvatarModule,
 	UserAvatarFilledModule,
 	LogoutModule,
 	HelpModule
-  ],
-  exports: [HeaderComponent, SidemenuComponent]
+	],
+	exports: [HeaderComponent, SidemenuComponent]
 })
 export class MenuModule { }

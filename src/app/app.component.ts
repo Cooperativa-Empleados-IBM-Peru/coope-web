@@ -13,24 +13,24 @@ import { MasterLookup } from './classes/masterlookup';
 export class AppComponent implements OnInit {
 	title = 'coopeibm-web';
 
-	masterlkup : MasterLookup;
+	masterlkup: MasterLookup;
 
 	sidemenuactive = false;
 	hasHamburger = true;
 	public isToken = false;
-	
+
 	constructor(
-		private ibmidservice: IbmidService, 
+		private ibmidservice: IbmidService,
 		public db2service: Db2Service,
 		private router: Router) {
 	}
 
 	ngOnInit(): void {
 		this.ibmidservice.isFetch.subscribe((isFetch: boolean) => {
-			if( isFetch ) {
+			if ( isFetch ) {
 				this.isToken = true;
 
-				if ( this.ibmidservice.Uuid == "") {
+				if ( this.ibmidservice.Uuid === '') {
 					setTimeout(() => {
 						window.location.href = '/logout';
 					}, 1000);
@@ -40,14 +40,14 @@ export class AppComponent implements OnInit {
 				this.db2service.getMasterLookupbyId(this.ibmidservice.Uuid).subscribe(
 					(resp: any) => {
 						if (resp) {
-							console.log("masterlookup data retrieved");
+							console.log('masterlookup data retrieved');
 							this.masterlkup = resp;
 
 							this.ibmidservice.Activo = this.masterlkup.activo;
 							if ( this.ibmidservice.Activo ) {
 								this.ibmidservice.LoggedIn = true;
 							}
-	
+
 							this.ibmidservice.CertSolMontos = this.masterlkup.certsolmontos;
 							this.ibmidservice.CertSolValor = this.masterlkup.certsolvalor;
 							this.ibmidservice.CertUsdMontos = this.masterlkup.certusdmontos;
@@ -99,13 +99,13 @@ export class AppComponent implements OnInit {
 							this.ibmidservice.UsdSaldoPresMedianoPlazo = this.masterlkup.usdsaldopresmedianoplazo;
 							this.ibmidservice.UsdSaldoPresPs1 = this.masterlkup.usdsaldopresps1;
 							this.ibmidservice.UsdSaldoPresSolaFirma = this.masterlkup.usdsaldopressolafirma;
-//							this.ibmidservice.Uuid = this.masterlkup.uuid;
+// 							this.ibmidservice.Uuid = this.masterlkup.uuid;
 
-							console.log("masterlookup data loaded");
+							console.log('masterlookup data loaded');
 					}
 				});
 
-			}  // if ( this.ibmidservice.Uuid == "") {
+			}  // if ( this.ibmidservice.Uuid === "") {
 
 			} //  if( isFetch ) {
 

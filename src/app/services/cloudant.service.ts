@@ -6,14 +6,14 @@ import { catchError } from 'rxjs/operators';
 const endpoint = '/api/cloudant/';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class CloudantService {
 
-  	constructor(private http: HttpClient) {
+		constructor(private http: HttpClient) {
 
-   }
-   	getServiciosUrl(): Observable<any> {
+		}
+			getServiciosUrl(): Observable<any> {
 		const params = new HttpParams()
 			.set('include_docs', 'true' );
 		return this.http.get(endpoint + 'servicios/_all_docs', {'headers': this.httpOptions(), 'params': params})
@@ -30,7 +30,7 @@ export class CloudantService {
 	}
 
 	deleteServiciosUrl(id: string, rev: string): Observable<any> {
-		return this.http.delete(endpoint + `servicios/${id}`+ `?rev=${rev}`, this.httpOptions())
+		return this.http.delete(endpoint + `servicios/${id}` + `?rev=${rev}`, this.httpOptions())
 		.pipe(catchError(this.handleError));
 	}
 
@@ -51,8 +51,8 @@ export class CloudantService {
 	.pipe(catchError(this.handleError));
 	}
 
-	deleteImagenesUrl(id: string, rev: string) : Observable<any> {
-		return this.http.delete(endpoint + `imagenes/${id}`+ `?rev=${rev}`, this.httpOptions())
+	deleteImagenesUrl(id: string, rev: string): Observable<any> {
+		return this.http.delete(endpoint + `imagenes/${id}` + `?rev=${rev}`, this.httpOptions())
 		.pipe(catchError(this.handleError));
 	}
 
@@ -99,21 +99,21 @@ export class CloudantService {
 		.pipe(catchError(this.handleError));
 	}
 
-	//ACTUALIZAR-CATEGORIA
+	// ACTUALIZAR-CATEGORIA
 	updateCategoria(id: string, url: Object): Observable<any> {
 		return this.http.put(endpoint + `categorias/${id}`, url,   this.httpOptions())
 	.pipe(catchError(this.handleError));
 	}
 
-	//INSERTAR-CATEGORIA
+	// INSERTAR-CATEGORIA
 	insertCategoria(data: Object): Observable<any> {
-		return this.http.post( endpoint + 'categorias', data,this.httpOptions())
+		return this.http.post( endpoint + 'categorias', data, this.httpOptions())
 		.pipe(catchError(this.handleError));
 	}
 
-	//BORRAR-CATEGORIA
-	deleteCategoria(id: string, rev: string) : Observable<any> {
-		return this.http.delete(endpoint + `categorias/${id}`+ `?rev=${rev}`, this.httpOptions())
+	// BORRAR-CATEGORIA
+	deleteCategoria(id: string, rev: string): Observable<any> {
+		return this.http.delete(endpoint + `categorias/${id}` + `?rev=${rev}`, this.httpOptions())
 		.pipe(catchError(this.handleError));
 	}
 
@@ -122,20 +122,20 @@ export class CloudantService {
 	.pipe(catchError(this.handleError));
 	}
 
-	updateProveedor(id: string, proveedor: Object) :  Observable<any>{
-        const params = new HttpParams()
+	updateProveedor(id: string, proveedor: Object):  Observable<any> {
+				const params = new HttpParams();
 
-          return this.http.put(endpoint + `coopeproveedor/${id}`, proveedor ,this.httpOptions())
-          .pipe(catchError(this.handleError));
+					return this.http.put(endpoint + `coopeproveedor/${id}`, proveedor , this.httpOptions())
+					.pipe(catchError(this.handleError));
 	}
 
-	deleteProveedor(id: string, rev: string) : Observable<any>{
-		return this.http.delete(endpoint + `proveedores/${id}`+ `?rev=${rev}`, this.httpOptions())
+	deleteProveedor(id: string, rev: string): Observable<any> {
+		return this.http.delete(endpoint + `proveedores/${id}` + `?rev=${rev}`, this.httpOptions())
 		.pipe(catchError(this.handleError));
 	}
 
 	insertProveedor(data: Object): Observable<any> {
-		return this.http.post( endpoint + 'proveedores', data,this.httpOptions())
+		return this.http.post( endpoint + 'proveedores', data, this.httpOptions())
 		.pipe(catchError(this.handleError));
 	}
 	public httpSecureOptions(headers: any = {}): any {

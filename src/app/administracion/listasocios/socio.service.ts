@@ -6,18 +6,18 @@ import { CoopeSocios } from '../../classes/coopesocios';
 import { Db2Service } from '../../services/db2.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class SocioService {
-  public dataLength: number;
-  private socios: CoopeSocios[] = [];
+	public dataLength: number;
+	private socios: CoopeSocios[] = [];
 	private dataStore: CoopeSocios[] = [];
-  //private socioUpdated = new Subject<{ socios: CoopeSocios[]; sociosLength: number }>();
+	// private socioUpdated = new Subject<{ socios: CoopeSocios[]; sociosLength: number }>();
 	private socioUpdated = new Subject<CoopeSocios[]>();
-  constructor(public db2Service: Db2Service,
+	constructor(public db2Service: Db2Service,
 	private router: Router) { }
 
-  /* getIbmers(page: number, pageLength: number) {
+	/* getIbmers(page: number, pageLength: number) {
     this.db2Service.getIbmers().subscribe(
       (resp: any) => {
         const dataIbmer = [];
@@ -36,7 +36,7 @@ export class SocioService {
     );
   } */
 
-  getIbmers() {
+	getIbmers() {
 	this.db2Service.getSociosIbm().subscribe(
 		(resp: any) => {
 			if (resp.length > 0 ) {
@@ -46,13 +46,13 @@ export class SocioService {
 			}
 		}
 	);
-  }
+	}
 
-  getIbmerUpdateListener() {
+	getIbmerUpdateListener() {
 		return this.socioUpdated.asObservable();
-  }
+	}
 
-  updateIbmer(socio: CoopeSocios) {
+	updateIbmer(socio: CoopeSocios) {
 		/* this.dataStore.forEach((t, i) => {
 			if ( t.codempleado.trim() === socio.codempleado.trim()) {
 				 t.codempleado = t.codempleado.trim();
@@ -81,7 +81,7 @@ export class SocioService {
 			}
 		}); */
 		this.db2Service.updateSocio(socio.uuid.trim(), socio).subscribe((response: any) => {
-//			console.log('socio updated');
+// 			console.log('socio updated');
 			// this.redirectTo('/administracion/listasocios');
 		});
 		/* this.socioUpdated.next({
@@ -89,13 +89,13 @@ export class SocioService {
 			sociosLength: this.dataLength}); */
 
 
-		//	this.socioUpdated.next([...this.dataStore]);
+		// 	this.socioUpdated.next([...this.dataStore]);
 	}
 
 	deleteIbmer(id: string) {
 		this.db2Service.deleteSocio(id.trim()).subscribe(() => {
 			// this.getIbmers();
-//			console.log('socio deleted');
+// 			console.log('socio deleted');
 		});
 	}
 
