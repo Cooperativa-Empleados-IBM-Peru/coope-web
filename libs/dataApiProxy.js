@@ -1,5 +1,8 @@
-// Proxy: Coope Data API (URL interna de Code Engine, solo visible para el servidor).
-// Solo la coleccion coopesocios admite escritura; el resto son vistas/tablas de solo lectura.
+// Proxy: Coope Data API (coope-backend). Solo la coleccion coopesocios admite escritura;
+// el resto son vistas/tablas de solo lectura.
+const { forwardToBackend } = require('./proxy');
+const { ensureAdmin } = require('./adminAuth');
+
 const COOPE_DATAAPI_READ_ONLY = new Set([
 	'vwsociosinactivos', 'vwsociosdetalles', 'vwmasterlookups', 'vwmasterplanpagos',
 	'movahorros', 'movbloqueos', 'movaportaciones', 'movmiscelaneos',
@@ -11,19 +14,17 @@ const COOPE_DATAAPI_READ_ONLY = new Set([
 	'vwsociosibm', 'vwsocioskyndryl', 'vwsociosexempleados'
 ]);
 const COOPE_DATAAPI_WRITABLE = new Set(['coopesocios']);
-const COOPE_DATAAPI_TIMEOUT_MS = 15000;
+
+// Colecciones con datos de TODOS los socios (padron): solo Admin, aunque sea lectura
+const COOPE_DATAAPI_ADMIN_ONLY = new Set([
+	'coopesocios', 'vwsociosinactivos', 'vwsociosibm', 'vwsocioskyndryl', 'vwsociosexempleados'
+]);
 
 function isSafeSegment(seg) {
 	return typeof seg === 'string' && seg.length > 0 && seg !== '.' && seg !== '..' && !seg.includes('/') && !seg.includes('\\');
 }
 
 async function handleDataApiProxy(req, res) {
-	const baseUrl = process.env.COOPE_DATAAPI_URL;
-	if (!baseUrl || !/^https?:\/\//.test(baseUrl)) {
-		console.error('Coope Data API proxy is not configured correctly');
-		return res.status(503).json({ error: 'Service unavailable' });
-	}
-
 	const segments = [].concat(req.params.splat || []);
 	if (segments.length < 1 || segments.length > 2 || !segments.every(isSafeSegment)) {
 		return res.status(404).json({ error: 'Not found' });
@@ -45,39 +46,17 @@ async function handleDataApiProxy(req, res) {
 		return res.status(404).json({ error: 'Not found' });
 	}
 
-	const search = new URL(req.originalUrl, 'http://localhost').search;
-	const url = baseUrl.replace(/\/+$/, '') + '/' + segments.map(encodeURIComponent).join('/') + search;
-
-	const headers = { 'Accept': 'application/json' };
-	if (req.headers.authorization) {
-		headers['Authorization'] = req.headers.authorization;
-	}
-	const hasBody = req.method === 'POST' || req.method === 'PUT';
-	if (hasBody) {
-		headers['Content-Type'] = 'application/json';
+	if ((COOPE_DATAAPI_ADMIN_ONLY.has(collection) || req.method !== 'GET') && !(await ensureAdmin(req, res))) {
+		return;
 	}
 
-	try {
-		const upstream = await fetch(url, {
-			method: req.method,
-			headers,
-			body: hasBody ? JSON.stringify(req.body ?? {}) : undefined,
-			signal: AbortSignal.timeout(COOPE_DATAAPI_TIMEOUT_MS)
-		});
-		const text = await upstream.text();
-		res.status(upstream.status)
-			.type(upstream.headers.get('content-type') || 'application/json')
-			.send(text);
-	} catch (err) {
-		console.error('Coope Data API proxy error:', err.message);
-		res.status(502).json({ error: 'Bad gateway' });
-	}
+	return forwardToBackend(req, res, '/' + segments.map(encodeURIComponent).join('/'));
 }
 
 module.exports = {
 	COOPE_DATAAPI_READ_ONLY,
 	COOPE_DATAAPI_WRITABLE,
-	COOPE_DATAAPI_TIMEOUT_MS,
+	COOPE_DATAAPI_ADMIN_ONLY,
 	isSafeSegment,
 	handleDataApiProxy
 };

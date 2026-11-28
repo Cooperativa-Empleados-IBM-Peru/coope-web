@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, TemplateRef, Inject, LOCALE_ID, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, Inject, LOCALE_ID, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import {  Observable, Subject, Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { IbmidService } from '../../services/ibmid.service';
 import { Db2Service } from '../../services/db2.service';
 import { CoopeSocios } from '../../classes/coopesocios';
@@ -24,7 +25,7 @@ import { SocioService } from './socio.service';
   templateUrl: './listasocios.component.html',
   styleUrls: ['./listasocios.component.scss']
 })
-export class ListasociosComponent implements OnInit {
+export class ListasociosComponent implements OnInit, OnDestroy {
 
   sociosIbmer: CoopeSocios[];
 	 private sociosSub: Subscription;
@@ -74,104 +75,48 @@ export class ListasociosComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if (!this.ibmidservice.LoggedIn || !this.ibmidservice.IsAdmin) {
-			this.router.navigate(['/']);
-	} else {
+		// Las tablas se inicializan siempre, para que la plantilla nunca vea un modelo indefinido
+		this.modelIbmer = this.newModel();
+		this.modelKyndryl = this.newModel();
+		this.modelExibmer = this.newModel();
+		this.modelExSocio = this.newModel();
 
-      	this.modelIbmer = new TableModel();
-		this.modelIbmer.header = [
+		// Defensa en profundidad: la ruta ya esta protegida por AdminGuard (Admin = vista VWCOOPEADMINS).
+		// Se espera a que termine la consulta de la sesion: leer IsAdmin antes de tiempo daria false
+		// y el listado no se cargaria nunca.
+		this.readySub = this.ibmidservice.ready$.pipe(
+			filter((ready: boolean) => ready),
+			take(1)
+		).subscribe(() => {
+			if (!this.ibmidservice.IsAdmin) {
+				this.router.navigate(['/']);
+				return;
+			}
+			this.loadTab('ibmer', this.db2service.getSociosIbm());
+			this.loadTab('kyndryl', this.db2service.getSociosKyndryl());
+			this.loadTab('exibmer', this.db2service.getSociosExEmpleados());
+			this.loadTab('exsocio', this.db2service.getExsocios());
+		});
+
+  }
+
+  ngOnDestroy(): void {
+		if (this.readySub) {
+			this.readySub.unsubscribe();
+		}
+  }
+
+  private readySub: Subscription;
+
+  private newModel(): TableModel {
+		const model = new TableModel();
+		model.header = [
 			new TableHeaderItem({data: 'Cod. Socio'}),
 			new TableHeaderItem({data: 'Email'}),
 			new TableHeaderItem({data: 'Nombre'}),
 			new TableHeaderItem({data: 'Acciones', sortable: false})
 		];
-
-	  	this.modelKyndryl =  new TableModel();
-	  	this.modelKyndryl.header = [
-			new TableHeaderItem({data: 'Cod. Socio'}),
-		  	new TableHeaderItem({data: 'Email'}),
-		  	new TableHeaderItem({data: 'Nombre'}),
-		  	new TableHeaderItem({data: 'Acciones', sortable: false})
-	  	];
-
-      	this.modelExibmer = new TableModel();
-		this.modelExibmer.header = [
-			new TableHeaderItem({data: 'Cod. Socio'}),
-			new TableHeaderItem({data: 'Email'}),
-			new TableHeaderItem({data: 'Nombre'}),
-        	new TableHeaderItem({data: 'Acciones', sortable: false})
-		];
-/*	  
-		this.modelJubilados =  new TableModel();
-	  	this.modelJubilados.header = [
-		  	new TableHeaderItem({data: 'Cod. Socio'}),
-		  	new TableHeaderItem({data: 'Email'}),
-		  	new TableHeaderItem({data: 'Nombre'}),
-		  	new TableHeaderItem({data: 'Acciones', sortable: false})
-	  	];
-*/	  
-		this.modelExSocio = new TableModel();
-		this.modelExSocio.header = [
-			new TableHeaderItem({data: 'Cod. Socio'}),
-			new TableHeaderItem({data: 'Email'}),
-			new TableHeaderItem({data: 'Nombre'}),
-        	new TableHeaderItem({data: 'Acciones', sortable: false})
-		];
-
-  this.loadTab('ibmer', this.db2service.getSociosIbm());
-  this.loadTab('kyndryl', this.db2service.getSociosKyndryl());
-  this.loadTab('exibmer', this.db2service.getSociosExEmpleados());
-  this.loadTab('exsocio', this.db2service.getExsocios());
-/*
-	  this.db2service.getIbmers().subscribe(
-        (resp: any) => {
-
-          if (resp.length > 0 ) {
-
-            for (var i = 0; i < resp.length; i++) {
-              this.socio = resp[i];
-
-              this.socios.push(
-                [	new TableItem({data : this.socio.codempleado }),
-                  new TableItem({data : this.socio.emailempleado }),
-                  new TableItem({data : this.socio.nombreempleado }),
-                  new TableItem({data: { id: this.socio.uuid }, template: this.overflowMenuItemTemplate})
-                ]
-              );
-
-            }
-
-            this.modelSocios.data = this.socios;
-          }
-
-		});
-
-		this.db2service.getExibmers().subscribe(
-			(resp: any) => {
-
-			  if (resp.length > 0 ) {
-
-				for (var i = 0; i < resp.length; i++) {
-				  this.socio = resp[i];
-
-				  this.jubilados.push(
-					[	new TableItem({data : this.socio.codempleado }),
-					  new TableItem({data : this.socio.emailempleado }),
-					  new TableItem({data : this.socio.nombreempleado }),
-					  new TableItem({data: { id: this.socio.uuid }, template: this.overflowMenuItemTemplate})
-					]
-				  );
-
-				}
-
-
-				this.modelJubilados.data = this.jubilados;
-			  }
-
-		});
-*/
-    }
-
+		return model;
   }
 
   // Full (unfiltered) list and current search text of each tab

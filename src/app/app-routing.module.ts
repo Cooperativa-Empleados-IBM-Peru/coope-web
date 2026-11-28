@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminGuard } from './guards/admin.guard';
 
 const routes: Routes = [
 	{
@@ -57,6 +58,10 @@ const routes: Routes = [
 	},
 	{
 		path: 'administracion',
+		// Solo Admin: no se descarga el modulo ni se activa ninguna ruta hija sin ese rol
+		canLoad: [AdminGuard],
+		canActivate: [AdminGuard],
+		canActivateChild: [AdminGuard],
 		loadChildren: () =>
 			import('./administracion/administracion.module').then(
 				(m) => m.AdministracionModule

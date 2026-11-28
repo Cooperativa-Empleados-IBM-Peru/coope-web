@@ -67,6 +67,9 @@ private usdsaldopressolafirma: number;
 private uuid: string;
 
 private isFetchSource = new BehaviorSubject<boolean>(false);
+// Emits true once the session lookup (/api/token) has finished, successfully or not
+private readySource = new BehaviorSubject<boolean>(false);
+public ready$ = this.readySource.asObservable();
 public isFetch = this.isFetchSource.asObservable();
 
 constructor(private http: HttpClient) {
@@ -81,9 +84,16 @@ constructor(private http: HttpClient) {
 			this.token = response.token;
 			this.emailempleado = response.email;
 			this.uuid = response.uuid;
+			// Admin role: the user is listed in the VWCOOPEADMINS view (resolved by the server)
+			this.isadmin = response.isAdmin === true;
 			this.isFetchSource.next(true);
+			this.readySource.next(true);
 			subscribeToken.unsubscribe();
 		}
+	}, () => {
+		// Fail closed: without a verified session nobody is an Admin
+		this.isadmin = false;
+		this.readySource.next(true);
 	});
 }
 

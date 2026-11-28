@@ -27,6 +27,16 @@ export class Db2Service {
     return body || { };
   }
 
+  // Builds the LoopBack `filter` query value. JSON.stringify escapes the values, so user-controlled
+  // text can never change the structure of the filter (where/order) sent to the backend.
+  private buildFilter(where: { [key: string]: string }, order?: string[]): string {
+    const filter: { where: { [key: string]: string }, order?: string[] } = { where };
+    if (order) {
+      filter.order = order;
+    }
+    return JSON.stringify(filter);
+  }
+
   generateUUID(){
     this.uuidValue=UUID.UUID();
     return this.uuidValue;
@@ -95,7 +105,7 @@ export class Db2Service {
       }
 
       const params = new HttpParams()
-        .set('filter', '{"where":{"ctacliente":"' + cuenta + '"}, "order":["fecemision DESC"]}');
+        .set('filter', this.buildFilter({ ctacliente: cuenta }, ['fecemision DESC']));
 
         return this.http.get(endpoint + lbcont, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
         .pipe(
@@ -151,7 +161,7 @@ export class Db2Service {
         }
 
         const params = new HttpParams()
-          .set('filter', '{"where":{"ctacliente":"' + cuenta + '"}, "order":["feccartera ASC"]}');
+          .set('filter', this.buildFilter({ ctacliente: cuenta }, ['feccartera ASC']));
 
           return this.http.get(endpoint + lbcont, { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -162,7 +172,7 @@ export class Db2Service {
   getPagosCancelados(operacion : string) : Observable<any>{
         //This don't have id because it has to return many entries for the operation
         const params = new HttpParams()
-          .set('filter', '{"where":{"numoperacion":"' + operacion + '"}, "order":["cuota ASC"]}');
+          .set('filter', this.buildFilter({ numoperacion: operacion }, ['cuota ASC']));
 
           return this.http.get(endpoint + 'planpagoscancelados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -173,7 +183,7 @@ export class Db2Service {
   getPagosPendientes(operacion : string) : Observable<any>{
         //This don't have id because it has to return many entries for the operation
         const params = new HttpParams()
-            .set('filter', '{"where":{"numoperacion":"' + operacion + '"}, "order":["cuota ASC"]}');
+            .set('filter', this.buildFilter({ numoperacion: operacion }, ['cuota ASC']));
 
             return this.http.get(endpoint + 'planpagospendientes', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
             .pipe(
@@ -184,7 +194,7 @@ export class Db2Service {
   getPagosTotales(operacion : string) : Observable<any>{
         //This don't have id because it has to return many entries for the operation
         const params = new HttpParams()
-          .set('filter', '{"where":{"numoperacion":"' + operacion + '"}}');
+          .set('filter', this.buildFilter({ numoperacion: operacion }));
 
           return this.http.get(endpoint + 'planpagostotales', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -215,7 +225,7 @@ export class Db2Service {
   getDetallesGarantes(operacion : string) : Observable<any>{
         //This don't have id because it has to return many entries for numoperacion
         const params = new HttpParams()
-          .set('filter', '{"where":{"numoperacion":"' + operacion + '"}, "order":["docidgarante ASC"]}');
+          .set('filter', this.buildFilter({ numoperacion: operacion }, ['docidgarante ASC']));
 
           return this.http.get(endpoint + 'garantesdetalle', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -226,7 +236,7 @@ export class Db2Service {
   getCertificadosDetalles(cuenta : string, tipo : string) : Observable<any>{
         //This don't have id because it returns many entries for cta. and tipo
         const params = new HttpParams()
-          .set('filter', '{"where":{"ctacliente":"' + cuenta + '", "tipocert":"' + tipo + '"}, "order":["fecemision ASC", "numdoc ASC"] }');
+          .set('filter', this.buildFilter({ ctacliente: cuenta, tipocert: tipo }, ['fecemision ASC', 'numdoc ASC']));
 
           return this.http.get(endpoint + 'certificadosmontos', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -237,7 +247,7 @@ export class Db2Service {
   getGarantizados(codemp : string) : Observable<any>{
        //This don't have an id because it can return many entries for cod.empleado
         const params = new HttpParams()
-          .set('filter', '{"where":{"codempleado":"' + codemp + '"} }');
+          .set('filter', this.buildFilter({ codempleado: codemp }));
 
           return this.http.get(endpoint + 'garantizados', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -248,7 +258,7 @@ export class Db2Service {
   getFra(codemp : string) : Observable<any>{
         //This don't have an id because it can return many entries for cod.empleado
         const params = new HttpParams()
-          .set('filter', '{"where":{"codempleado":"' + codemp + '"} }');
+          .set('filter', this.buildFilter({ codempleado: codemp }));
 
           return this.http.get(endpoint + 'fra', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(
@@ -259,7 +269,7 @@ export class Db2Service {
   getSiniestros(codemp : string) : Observable<any>{
         //This don't have an id because it can return many entries by cod.empleado
         const params = new HttpParams()
-          .set('filter', '{"where":{"codempleado":"' + codemp + '"} }');
+          .set('filter', this.buildFilter({ codempleado: codemp }));
 
           return this.http.get(endpoint + 'siniestros', { params, 'headers': this.secureService.httpSecureOptions(), responseType: 'json'} )
           .pipe(

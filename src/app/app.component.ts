@@ -68,7 +68,6 @@ export class AppComponent implements OnInit {
 							this.ibmidservice.IntAhorroMesUsd = this.masterlkup.intahorromesusd;
 							this.ibmidservice.IntMiscelaneoMesSol = this.masterlkup.intmiscelaneomessol;
 							this.ibmidservice.IntMiscelaneoMesUsd = this.masterlkup.intmiscelaneomesusd;
-							this.ibmidservice.IsAdmin = this.masterlkup.isadmin;
 							this.ibmidservice.NombreEmpleado = this.masterlkup.nombreempleado;
 							this.ibmidservice.SaldoAportacionSol = this.masterlkup.saldoaportacionsol;
 							this.ibmidservice.SaldoAportacionUsd = this.masterlkup.saldoaportacionusd;
